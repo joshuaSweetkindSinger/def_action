@@ -9,7 +9,7 @@ describe "Static pages" do
 
     it "should have the title 'Home'" do
       visit '/static_pages/home'
-      page.should have_selector('title', text: "Home")
+      page.should have_selector('title', text: "Sample App")
     end
   end
 
@@ -34,6 +34,18 @@ describe "Static pages" do
     it "should have the title 'About Us'" do
       visit '/static_pages/about'
       page.should have_selector('title', text: "About Us")
+    end
+  end
+
+  describe "Contact page" do
+    it "should have the title 'Contact Us'" do
+      visit '/static_pages/contact'
+      page.should have_selector('title', text: 'Contact Us')
+    end
+
+    it "should have the h1 'Contact Us'" do
+      visit '/static_pages/contact'
+      page.should have_selector('h1', text: 'Contact Us')
     end
   end
 end
