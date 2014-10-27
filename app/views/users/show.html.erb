@@ -5,7 +5,11 @@
       <h1>
         <%= gravatar_for @user, size: 100 %>
         <%= @user.name %>
+        <%= @user.email %>
       </h1>
+      <% if @user.admin? %>
+        is an admin
+      <% end %>
     </section>
   </aside>
 </div>

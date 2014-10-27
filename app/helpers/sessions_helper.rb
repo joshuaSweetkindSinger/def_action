@@ -17,7 +17,25 @@ module SessionsHelper
     @current_user ||= User.find_by_remember_token(cookies[:remember_token])
   end
 
+
+  # Returns true when the specified user is the current user; otherwise, false.
+  def current_user? (u)
+    u == current_user
+  end
+
   def signed_in?
     !current_user.nil?
+  end
+
+  # Take the user to the saved ":return_to" page, or to the specified default
+  # page if there is no :return_to page saved for the session.
+  def redirect_back_or (default)
+    redirect_to(session[:return_to] || default)
+    session.delete(:return_to)
+  end
+
+  # Save the requested path to the :return_to key on the session, for access later.
+  def cache_requested_url
+    session[:return_to] = request.fullpath
   end
 end
