@@ -34,7 +34,7 @@ module SessionsHelper
   end
 
   def signed_in?
-    !current_user.nil?
+    current_user
   end
 
   # Take the user to the saved ":return_to" page, or to the specified default
@@ -47,5 +47,12 @@ module SessionsHelper
   # Save the requested path to the :return_to key on the session, for access later.
   def cache_requested_url
     session[:return_to] = request.fullpath
+  end
+
+  # Save the path of the current url so that we can return to it on redirect_to
+  # For example, when deleting a micropost from a page, we delete the post and then
+  # issue a redirect back to the current page.
+  def cache_current_url
+    session[:current_url] = request.fullpath
   end
 end
