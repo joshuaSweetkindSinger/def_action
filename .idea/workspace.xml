@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="05ba27f1-b4da-4c54-830d-7514e935df8f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/requests/user_pages_spec.rb" afterPath="$PROJECT_DIR$/spec/requests/user_pages_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="05ba27f1-b4da-4c54-830d-7514e935df8f" name="Default" comment="" />
     <ignored path="sample_app.iws" />
     <file path="/Gemfile" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414274084002" ignored="false" />
     <file path="/static_pages_spec.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414532110505" ignored="false" />
