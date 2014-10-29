@@ -52,6 +52,7 @@ describe 'UserPages' do
       it {should_not have_link('delete', href: user_path(admin))}
     end
   end
+
   describe 'signup page' do
     before {visit signup_path}
     it {should have_selector('h1', text: 'Sign Up')}
@@ -60,17 +61,85 @@ describe 'UserPages' do
 
   describe "profile page" do
     let(:user) {FactoryGirl.create(:user)}
+    let(:another_user) {FactoryGirl.create(:user)}
+    let(:admin) {FactoryGirl.create(:admin)}
     let!(:m1) {FactoryGirl.create(:micropost, user: user, content: "foo")}
     let!(:m2) {FactoryGirl.create(:micropost, user: user, content: 'bar')}
+    let!(:another_user_post) {FactoryGirl.create(:micropost, user: another_user, content: 'baz')}
+    let!(:admin_post) {FactoryGirl.create(:micropost, user: admin, content: 'pizzaz')}
 
-    before {visit user_path(user)}
-    it {should have_selector('h1', text: user.name)}
-    it {should have_selector('title', text: user.name)}
+    describe "when not signed in" do
+      before {visit user_path(user)}
+      it {should have_selector('h1', text: user.name)}
+      it {should have_selector('title', text: user.name)}
 
-    describe "microposts" do
-      it {should have_content(m1.content)}
-      it {should have_content(m2.content)}
-      it {should have_content(user.microposts.count)}
+      describe "microposts" do
+        it {should have_content(m1.content)}
+        it {should have_content(m2.content)}
+        it {should have_content(user.microposts.count)}
+        it {should_not have_link("Delete this post")}
+      end
+    end
+
+    describe "when signed in as non-admin" do
+      before {sign_in_using_form user}
+
+      describe "when visiting own profile" do
+        before {visit user_path(user)}
+
+        it {should have_selector('h1', text: user.name)}
+        it {should have_selector('title', text: user.name)}
+
+        describe "microposts" do
+          it {should have_content(m1.content)}
+          it {should have_content(m2.content)}
+          it {should have_content(user.microposts.count)}
+          it {should have_link("Delete this post")}
+        end
+      end
+
+      describe "when visiting another user profile" do
+        before {visit user_path(another_user)}
+
+        it {should have_selector('h1', text: another_user.name)}
+        it {should have_selector('title', text: another_user.name)}
+
+        describe "microposts" do
+          it {should have_content(another_user_post.content)}
+          it {should have_content(another_user.microposts.count)}
+          it {should_not have_link("Delete this post")}
+        end
+      end
+    end
+
+    describe "when signed in as admin" do
+      before {sign_in_using_form admin}
+
+      describe "when visiting own profile" do
+        before {visit user_path(admin)}
+
+        it {should have_selector('h1', text: admin.name)}
+        it {should have_selector('title', text: admin.name)}
+
+        describe "microposts" do
+          it {should have_content(admin_post.content)}
+          it {should have_content(admin.microposts.count)}
+          it {should have_link("Delete this post")}
+        end
+      end
+
+      describe "when visiting another user profile" do
+        before {visit user_path(another_user)}
+
+        it {should have_selector('h1', text: another_user.name)}
+        it {should have_selector('title', text: another_user.name)}
+
+        describe "microposts" do
+          it {should have_content(another_user_post.content)}
+          it {should have_content(another_user.microposts.count)}
+          it {should have_link("Delete this post")}
+        end
+      end
     end
   end
 
