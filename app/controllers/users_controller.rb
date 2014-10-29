@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :force_sign_in, only: [:index, :edit, :update, :destroy]
+  before_filter :require_sign_in, only: [:index, :edit, :update, :destroy]
   before_filter :block_unauthorized_deletion, only: [:destroy]
   before_filter :block_unauthorized_modification, only: [:edit, :update]
 
@@ -9,6 +9,7 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   def create
@@ -46,12 +47,6 @@ class UsersController < ApplicationController
   end
 
   private
-  def force_sign_in
-    unless signed_in?
-      cache_requested_url
-      redirect_to signin_path, notice: 'Please sign in.'
-    end
-  end
 
   # In general, a user may only alter his own data, not the data of another, unless the user
   # is also an admin.

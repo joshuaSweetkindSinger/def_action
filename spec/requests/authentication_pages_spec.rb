@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Authentication' do
   subject { page }
 
-  describe 'signin' do
+  describe 'on signin-page' do
     before {visit signin_path}
 
     it {should have_selector('h1',    text: 'Sign in')}
@@ -117,6 +117,21 @@ describe 'Authentication' do
         before {delete user_path(user)}
         specify {response.should redirect_to(root_path)}
       end
+    end
+  end
+
+  describe "in the microposts controller" do
+    describe "submitting to the create action" do
+      before {post microposts_path}
+      specify {response.should redirect_to(signin_path)}
+    end
+
+    describe "submitting to the destroy action" do
+      before do
+        micropost = FactoryGirl.create(:micropost)
+        delete micropost_path(micropost)
+      end
+      specify {response.should redirect_to(signin_path)}
     end
   end
 end

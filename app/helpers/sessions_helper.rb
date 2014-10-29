@@ -1,7 +1,17 @@
+# This module provides utility functions for managing a session:
+# sign-in, sign-out, setting and querying about the current_user.
+
 module SessionsHelper
   def sign_in (user)
     cookies.permanent[:remember_token] = user.remember_token
     self.current_user = user
+  end
+
+  def require_sign_in
+    unless signed_in?
+      cache_requested_url
+      redirect_to signin_path, notice: 'Please sign in.'
+    end
   end
 
   def sign_out
