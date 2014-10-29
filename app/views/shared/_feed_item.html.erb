@@ -8,8 +8,6 @@
     Posted <%= time_ago_in_words(feed_item.created_at) %> ago.
   </span>
   <% if current_user?(feed_item.user) %>
-    <span class = "deletion_link">
-      <%= link_to 'Delete this link', feed_item, method: :delete, confirm: 'Really delete this post?' %>
-    </span>
+      <%= link_to 'Delete this post', feed_item, method: :delete, confirm: 'Really delete this post?' %>
   <% end %>
 </li>

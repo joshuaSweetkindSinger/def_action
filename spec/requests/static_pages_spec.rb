@@ -31,7 +31,7 @@ describe "Static pages" do
     before do
       FactoryGirl.create(:micropost, user: user, content: "this is a micropost")
       FactoryGirl.create(:micropost, user: user, content: "this is another micropost")
-      sign_in(user)
+      sign_in_using_form(user)
       visit root_path
     end
 

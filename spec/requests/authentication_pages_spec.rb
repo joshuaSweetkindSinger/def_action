@@ -23,7 +23,7 @@ describe 'Authentication' do
 
     describe 'with valid information' do
       let(:user) {FactoryGirl.create(:user)}
-      before {sign_in(user)}
+      before {sign_in_using_form(user)}
 
       it {should have_selector('title', text: user.name)}
 
@@ -94,7 +94,7 @@ describe 'Authentication' do
     describe "for signed in users" do
       let(:user) {FactoryGirl.create(:user)}
       let(:another_user) {FactoryGirl.create(:user)}
-      before {sign_in(user)}
+      before {sign_in_using_form(user)}
 
       describe "in the Users controller" do
         describe "visiting another user's edit page" do
@@ -104,7 +104,9 @@ describe 'Authentication' do
 
         describe "submitting to another user's update action" do
           before {put user_path(another_user)}
-          specify {response.should redirect_to(root_path)}
+          specify do
+            response.should redirect_to(root_path)
+          end
         end
       end
     end
@@ -112,7 +114,7 @@ describe 'Authentication' do
     describe "as non-admin user" do
       let(:user) {FactoryGirl.create(:user)}
       let(:non_admin) {FactoryGirl.create(:user)}
-      before {sign_in non_admin}
+      before {sign_in_using_form non_admin}
       describe "submitting a delete request to the users#destroy action" do
         before {delete user_path(user)}
         specify {response.should redirect_to(root_path)}

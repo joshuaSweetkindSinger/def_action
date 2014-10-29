@@ -5,7 +5,7 @@ describe "Micropost pages" do
 
   let(:user) {FactoryGirl.create(:user)}
 
-  before {sign_in user}
+  before {sign_in_using_form user}
 
   describe "micropost creation" do
     before {visit root_path}
@@ -29,24 +29,30 @@ describe "Micropost pages" do
     end
   end
 
+  describe "micropost destruction" do
+    before {FactoryGirl.create(:micropost, user: user)}
+
+    describe "as correct user" do
+      before {visit root_path}
+
+      it "should delete a micropost" do
+        expect {click_link 'Delete'}.should change(Micropost, :count).by(-1)
+      end
+    end
+  end
+
   describe "when attempting to delete a micropost" do
-    let(:user1) {FactoryGirl.create(:user)}
-    let(:user2) {FactoryGirl.create(:user)}
-    let(:admin) {FactoryGirl.create(:admin)}
-    let(:post1) {FactoryGirl.create(:micropost, user: user1)}
-    let (:post2) {FactoryGirl.create(:micropost, user: user2)}
 
-    before {sign_in user2}
-
-    describe "when not signed in" do
-      it "post should not be deleted" do
+    describe "when signed in as correct user" do
+      before do
+        FactoryGirl.create(:micropost, user: user)
+        visit root_path
+        @delete_post_action = expect {click_link('Delete')}
       end
-    end
 
-    describe "when signed in" do
       it "post should be deleted" do
+        @delete_post_action.should change(Micropost, :count).by(-1)
       end
     end
-
   end
 end

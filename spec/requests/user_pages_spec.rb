@@ -12,7 +12,7 @@ describe 'UserPages' do
 
 
     before(:each) do
-      sign_in user
+      sign_in_using_form user
       visit users_path
     end
 
@@ -36,7 +36,7 @@ describe 'UserPages' do
     describe "as an admin user"do
       let(:admin) {FactoryGirl.create(:admin)}
       before do
-        sign_in admin
+        sign_in_using_form admin
         visit users_path
       end
 
@@ -109,7 +109,7 @@ describe 'UserPages' do
   describe 'edit' do
     let(:user) {FactoryGirl.create(:user)}
     before do
-      sign_in(user)
+      sign_in_using_form(user)
       visit edit_user_path(user)
     end
 
