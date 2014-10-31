@@ -6,6 +6,7 @@
       <w>signin</w>
       <w>signout</w>
       <w>signup</w>
+      <w>unfollow</w>
     </words>
   </dictionary>
 </component>

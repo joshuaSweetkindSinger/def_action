@@ -15,10 +15,8 @@ class User < ActiveRecord::Base
 
   has_many :microposts, dependent: :destroy
   has_many :relationships, foreign_key: 'follower_id', dependent: :destroy
-  has_many :reverse_relationships, class_name: "Relationship",
-                                  foreign_key: 'followed_id',
-                                  dependent: :destroy
   has_many :followed_users, through: :relationships, source: :followed
+  has_many :reverse_relationships, foreign_key: 'followed_id', dependent: :destroy, class_name: 'Relationship'
   has_many :followers, through: :reverse_relationships
 
   before_save {|user| user.email = email.downcase}
@@ -37,16 +35,16 @@ class User < ActiveRecord::Base
     Micropost.where("user_id = ?", id)
   end
 
-  def following? (other_user)
-    relationships.find_by_followed_id(other_user.id)
+  def following? (followed_user)
+    followed_users.include?(followed_user)
   end
 
-  def follow! (other_user)
-    relationships.create!(followed_id: other_user.id)
+  def follow! (followed_user)
+    followed_users << followed_user
   end
 
-  def unfollow! (other_user)
-    relationships.find_by_followed_id(other_user.id).destroy
+  def unfollow! (followed_user)
+    followed_users.delete(followed_user)
   end
 
   private
