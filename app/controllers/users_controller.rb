@@ -8,11 +8,6 @@ class UsersController < ApplicationController
   end
 
   def show
-    puts "************************* Executing UsersController#show ***********************"
-    puts request.fullpath
-    puts params
-    puts "**********************************************"
-
     @user = User.find(params[:id])
     @microposts = @user.microposts.paginate(page: params[:page])
   end

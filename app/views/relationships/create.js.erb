@@ -1,4 +1,2 @@
-console.log("Running create.js")
-
 $("#follow_form").html("<%= escape_javascript(render('users/unfollow_button')) %>")
 $('#followers').html('<%= @user.followers.count %>')

@@ -1,11 +1,7 @@
-<% puts "************************************ " %>
-<% puts "******* Rendering Unfollow ********* " %>
-<% puts "************************************ " %>
-
-<%= form_for(current_user.relationships.find_by_followed_id(@user),
+<%= form_tag(relationship_path(Relationship.where(followed_id: @user.id, follower_id: current_user.id).first.id),
              remote: true,
-             html: {method: :delete}) do |f| %>
-  <div><%= f.hidden_field :followed_id %></div>
-  <div><%= f.hidden_field :follower_id %></div>
-  <%= f.submit 'Unfollow', class: 'btn btn-large btn-primary' %>
+             method: :delete) do %>
+  <div><%= hidden_field_tag :followed_id, @user.id %></div>
+  <div><%= hidden_field_tag :follower_id, current_user.id %></div>
+  <%= submit_tag 'Unfollow', class: 'btn btn-large btn-primary' %>
 <% end %>
