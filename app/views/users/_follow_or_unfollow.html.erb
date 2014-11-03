@@ -1,7 +1,11 @@
+<% puts "************************************ " %>
+<% puts "******* Rendering Follow / Unfollow " %>
+<% puts "************************************ " %>
+
 <% unless current_user?(@user) %>
   <div id = "follow_form">
     <% if current_user.following?(@user) %>
-      <%= render 'unfollow' %>
+      <%= render 'unfollow_button' %>
     <% else %>
       <%= render 'follow_button' %>
     <% end %>

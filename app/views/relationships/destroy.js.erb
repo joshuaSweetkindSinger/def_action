@@ -1,0 +1,4 @@
+console.log("running destroy.js")
+
+$("#follow_form").html("<%= escape_javascript(render('users/follow_button')) %>")
+$("#followers").html('<%= @user.followers.count %>')

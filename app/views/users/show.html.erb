@@ -1,4 +1,7 @@
 <%provide(:title, @user.name)%>
+<% puts "************************************ " %>
+<% puts "******* Rendering Show ************* " %>
+<% puts "************************************ " %>
 <div class = "row">
   <aside class = "span4">
     <section>
@@ -11,9 +14,11 @@
         is an admin
       <% end %>
     </section>
+    <%= render 'shared/stats' %>
   </aside>
 
   <div class = "span8">
+    <%= render 'follow_or_unfollow' if signed_in? %>
     <% if @user.microposts.any? %>
       <h3> Microposts Count <%= @user.microposts.count %> </h3>
       <ol class = "microposts">
