@@ -60,6 +60,27 @@ class UsersController < ApplicationController
     render 'show_follow'
   end
 
+  # Cause the current user to follow the user whose id is params[:id]
+  def add_current_user_as_follower
+    @user = User.find(params[:id])
+    current_user.follow!(@user)
+    respond_to do |format|
+      format.html {redirect_to :back}
+      format.js
+    end
+  end
+
+  # Cause the current user to unfollow the user whose id is params[:id]
+  def remove_current_user_as_follower
+    @user = User.find(params[:id])
+    current_user.unfollow!(@user)
+    respond_to do |format|
+      format.html {redirect_to :back}
+      format.js
+    end
+  end
+
+
   private
 
   # In general, a user may only alter his own data, not the data of another, unless the user

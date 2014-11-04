@@ -2,12 +2,14 @@ SampleApp::Application.routes.draw do
   resources :users do
     member do
       get :following, :followers
+      post :add_current_user_as_follower
+      delete :remove_current_user_as_follower
     end
   end
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :microposts, only: [:create, :destroy]
-  resources :relationships, only: [:create, :destroy]
+  # resources :relationships, only: [:create, :destroy]
 
   root to: 'static_pages#home'
   match '/help', to: 'static_pages#help'
