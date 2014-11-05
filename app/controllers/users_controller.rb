@@ -61,7 +61,7 @@ class UsersController < ApplicationController
   end
 
   # Cause the current user to follow the user whose id is params[:id]
-  def add_current_user_as_follower
+  def follow
     @user = User.find(params[:id])
     current_user.follow!(@user)
     respond_to do |format|
@@ -71,7 +71,7 @@ class UsersController < ApplicationController
   end
 
   # Cause the current user to unfollow the user whose id is params[:id]
-  def remove_current_user_as_follower
+  def unfollow
     @user = User.find(params[:id])
     current_user.unfollow!(@user)
     respond_to do |format|
