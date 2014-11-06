@@ -10,4 +10,8 @@ class Micropost < ActiveRecord::Base
   belongs_to :user
 
   default_scope order: 'microposts.created_at desc'
+
+  def self.from_users_followed_by (user)
+    where('user_id in (?) or user_id = (?)', user.followed_user_ids, user.id)
+  end
 end

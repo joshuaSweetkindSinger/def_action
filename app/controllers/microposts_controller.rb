@@ -18,14 +18,15 @@ class MicropostsController < ApplicationController
     flash[:success] = 'Post deleted'
     redirect_to :back
   end
-end
 
-private
-# Only the owner of a micropost or an admin can delete the micropost.
-def block_unauthorized_deletion
-  @micropost = Micropost.find(params[:id])
+  private
 
-  if !current_user.admin? && !current_user?(@micropost.user)
-    redirect_to root_path, notice: 'Only an admin or the owner of a post can delete a post.'
+  # Only the owner of a micropost or an admin can delete the micropost.
+  def block_unauthorized_deletion
+    @micropost = Micropost.find(params[:id])
+
+    if !current_user.admin? && !current_user?(@micropost.user)
+      redirect_to root_path, notice: 'Only an admin or the owner of a post can delete a post.'
+    end
   end
 end
