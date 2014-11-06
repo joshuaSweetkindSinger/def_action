@@ -96,7 +96,7 @@ describe 'UserPages' do
     let!(:another_user_post) {FactoryGirl.create(:micropost, user: another_user, content: 'baz')}
     let!(:admin_post) {FactoryGirl.create(:micropost, user: admin, content: 'pizzaz')}
 
-    describe "follow/unfollow buttons" do
+    describe "follow_button/unfollow_button buttons" do
       let(:other_user) {FactoryGirl.create(:user)}
       before {sign_in_using_form user}
 

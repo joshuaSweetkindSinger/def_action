@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_filter :require_sign_in, only: [:index, :edit, :update, :destroy, :following, :followers]
+  before_filter :require_sign_in, only: [:index, :edit, :update, :destroy, :following, :followers, :follow, :unfollow]
   before_filter :block_unauthorized_deletion, only: [:destroy]
   before_filter :block_unauthorized_modification, only: [:edit, :update]
 
@@ -63,10 +63,16 @@ class UsersController < ApplicationController
   # Cause the current user to follow the user whose id is params[:id]
   def follow
     @user = User.find(params[:id])
-    current_user.follow!(@user)
+    current_user.follow!(@user) unless @user == current_user
     respond_to do |format|
       format.html {redirect_to :back}
-      format.js
+      format.js do
+        if @user == current_user
+          render 'follow_button' # don't toggle button if we attempted to follow_button ourselves
+        else
+          render 'unfollow_button'
+        end
+      end
     end
   end
 
@@ -76,7 +82,9 @@ class UsersController < ApplicationController
     current_user.unfollow!(@user)
     respond_to do |format|
       format.html {redirect_to :back}
-      format.js
+      format.js do
+        render 'follow_button'
+      end
     end
   end
 

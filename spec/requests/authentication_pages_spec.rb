@@ -98,16 +98,17 @@ describe 'Authentication' do
           before {put user_path(user)}
           specify {response.should redirect_to(signin_path)}
         end
-      end
 
-      describe "in the Relationships controller" do
-        describe "submitting to the create action" do
-          before {post relationships_path}
+        describe "attempting to follow a user" do
+          let (:other_user) {FactoryGirl.create(:user)}
+
+          before {post follow_user_path(other_user)}
           specify {response.should redirect_to(signin_path)}
         end
 
-        describe "submitting to the destroy action" do
-          before {delete relationship_path(1)}
+        describe "attempting to unfollow a user" do
+          let (:other_user) {FactoryGirl.create(:user)}
+          before {delete unfollow_user_path(other_user)}
           specify {response.should redirect_to(signin_path)}
         end
       end
