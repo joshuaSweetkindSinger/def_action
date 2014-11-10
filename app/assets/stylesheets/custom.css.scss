@@ -1,5 +1,16 @@
 @import "bootstrap";
 
+/*
+$purple: #FF00FF;
+$red: #FF0000;
+$gray: #888888;
+$grayLight: #AAAAAA;
+$grayLighter: #CCCCCC;
+$green: #00FF00;
+$yellow: #FFFF00;
+$blue: #0000FF;
+*/
+
 /* mixins, variables */
 $grayMediumLight: #eaeaea;
 
@@ -213,8 +224,8 @@ input, textarea, select, .uneditable-input {
 }
 
 .field_with_errors {
-  @extend .control-group;
-  @extend .error;
+  @extend .control-group !optional;
+  @extend .error !optional;
 }
 
 /* microposts */
