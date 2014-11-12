@@ -27,7 +27,6 @@ module SessionsHelper
     @current_user ||= User.find_by_remember_token(cookies[:remember_token])
   end
 
-
   # Returns true when the specified user is the current user; otherwise, false.
   def current_user? (u)
     u == current_user

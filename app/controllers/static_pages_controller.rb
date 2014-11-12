@@ -7,7 +7,7 @@ class StaticPagesController < ApplicationController
   # or a sign-in page, if the user has not signed in yet.
   def home
     @micropost = current_user.microposts.build # empty micropost for form template
-    @feed_items = current_user.feed.paginate(page: params[:page])
+    @posts     = current_user.feed.paginate(page: params[:page])
     render 'static_pages/home'
   end
 
