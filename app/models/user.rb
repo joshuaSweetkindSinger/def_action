@@ -46,6 +46,13 @@ class User < ActiveRecord::Base
     followed_users.delete(followed_user)
   end
 
+  # Attempt to create and save a micropost. Return
+  # both the created post and the save-status: true for success, false for failure.
+  def create_post (post_key_value_pairs)
+    post = microposts.build(post_key_value_pairs)
+    [post, post.save]
+  end
+
   private
   def create_member_token
     self.remember_token = SecureRandom.urlsafe_base64

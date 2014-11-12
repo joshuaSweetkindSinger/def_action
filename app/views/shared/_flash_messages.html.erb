@@ -1,0 +1,13 @@
+<!-- Render all the warnings and error messages in the rails flash -->
+
+<% flash.each do |key, value| %>
+  <%= content_tag(:div, class: "alert alert-#{key}") do %>
+    <% if value.is_a?(Array) %>
+      <% value.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    <% else %>
+      <p><%= value %></p>
+    <% end %>
+  <% end %>
+<% end %>
