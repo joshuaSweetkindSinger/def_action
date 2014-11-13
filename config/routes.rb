@@ -13,8 +13,8 @@ SampleApp::Application.routes.draw do
   match '/help', to: 'static_pages#help'
   match '/about', to: 'static_pages#about'
   match '/contact', to: 'static_pages#contact'
-  match '/signup', to: 'static_pages#sign_up'
-  match '/signin', to: 'static_pages#sign_in'
+  match '/sign_up', to: 'static_pages#sign_up'
+  match '/sign_in', to: 'static_pages#sign_in'
   match '/signout', to: 'sessions#destroy', via: :delete
   match '/create_post', to: 'static_pages#create_post', via: :post
   match '/destroy_post', to: 'static_pages#destroy_post', via: :delete

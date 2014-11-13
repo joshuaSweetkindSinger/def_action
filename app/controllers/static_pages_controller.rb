@@ -25,6 +25,9 @@ class StaticPagesController < ApplicationController
   def contact
   end
 
+  def sign_in
+  end
+
   private
 
   # Only the owner of a micropost or an admin can delete the micropost.

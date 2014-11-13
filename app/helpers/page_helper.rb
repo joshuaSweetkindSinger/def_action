@@ -12,7 +12,7 @@ module PageHelper
   def maybe_require_sign_in
     if !signed_in? && sign_in_required?
       cache_requested_url
-      redirect_to signin_path, notice: 'Please sign in.'
+      redirect_to sign_in_path, notice: 'Please sign in.'
     end
   end
 end
