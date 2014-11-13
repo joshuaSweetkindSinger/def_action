@@ -7,13 +7,6 @@ module SessionsHelper
     self.current_user = user
   end
 
-  def require_sign_in
-    unless signed_in?
-      cache_requested_url
-      redirect_to signin_path, notice: 'Please sign in.'
-    end
-  end
-
   def sign_out
     self.current_user = nil
     cookies.delete(:remember_token)
@@ -24,7 +17,9 @@ module SessionsHelper
   end
 
   def current_user
-    @current_user ||= User.find_by_remember_token(cookies[:remember_token])
+    if signed_in?
+      @current_user ||= User.find_by_remember_token(remember_token)
+    end
   end
 
   # Returns true when the specified user is the current user; otherwise, false.
@@ -33,7 +28,11 @@ module SessionsHelper
   end
 
   def signed_in?
-    current_user
+    remember_token
+  end
+
+  def remember_token
+    cookies[:remember_token]
   end
 
   # Take the user to the saved ":return_to" page, or to the specified default

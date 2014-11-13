@@ -1,15 +1,6 @@
 class StaticPagesController < ApplicationController
-  before_filter :require_sign_in, except: [:help, :about, :contact]
   before_filter :block_unauthorized_post_deletion, only: [:destroy_post]
 
-
-  # Show either the user's home page, if the user has already signed in,
-  # or a sign-in page, if the user has not signed in yet.
-  def home
-    @micropost = current_user.microposts.build # empty micropost for form template
-    @posts     = current_user.feed.paginate(page: params[:page])
-    render 'static_pages/home'
-  end
 
   # Create a new micropost from the home page.
   def create_post

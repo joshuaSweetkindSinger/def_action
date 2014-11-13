@@ -9,7 +9,7 @@ SampleApp::Application.routes.draw do
 
   resources :sessions, only: [:create, :destroy]
 
-  root to: 'static_pages#home'
+  root to: 'home_page#show'
   match '/help', to: 'static_pages#help'
   match '/about', to: 'static_pages#about'
   match '/contact', to: 'static_pages#contact'
@@ -18,6 +18,7 @@ SampleApp::Application.routes.draw do
   match '/signout', to: 'sessions#destroy', via: :delete
   match '/create_post', to: 'static_pages#create_post', via: :post
   match '/destroy_post', to: 'static_pages#destroy_post', via: :delete
+  match '/users_index', to: 'users_index_page#show', as: :users_index
 
 
   # The priority is based upon order of creation:

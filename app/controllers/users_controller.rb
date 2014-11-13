@@ -1,5 +1,4 @@
-class UsersController < ApplicationController
-  before_filter :require_sign_in, only: [:index, :edit, :update, :destroy, :following, :followers, :follow, :unfollow]
+class UsersController < PageController
   before_filter :block_unauthorized_deletion, only: [:destroy]
   before_filter :block_unauthorized_modification, only: [:edit, :update]
 
@@ -21,10 +20,6 @@ class UsersController < ApplicationController
     else
       render 'new'
     end
-  end
-
-  def index
-    @users = User.paginate(page: params[:page])
   end
 
   def edit
