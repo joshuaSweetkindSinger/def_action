@@ -15,7 +15,7 @@
   </aside>
 
   <div class = "span8">
-    <%= render 'follow_or_unfollow' if signed_in? %>
+    <%= render 'shared/follow_or_unfollow' if signed_in? %>
     <% if @user.microposts.any? %>
       <h3> Microposts Count <%= @user.microposts.count %> </h3>
       <ol class = "microposts">

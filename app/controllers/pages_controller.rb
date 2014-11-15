@@ -33,15 +33,26 @@ class PagesController < ApplicationController
   # Cause the user to be signed in with the supplied credentials
   def_sign_in :sign_in_to_session, :sign_in_not_required
   def sign_in_to_session
+
+    # Action
     @user = User.find_by_email(params[:email])
     @authenticated = @user && @user.authenticate(params[:password])
-    sign_in user if @authenticated
+    sign_in @user if @authenticated
+
+    # UI
+    if @authenticated
+      redirect_back_or root_path
+    else
+      flash[:error] = 'Invalid email/password combination'
+      redirect_to sign_in_path
+    end
   end
 
   # Cause the user to be signed out.
   def_sign_in :sign_out_of_session, :sign_in_not_required
   def sign_out_of_session
     sign_out
+    redirect_to sign_in_path
   end
 
   # Create a new micropost from the home page.
@@ -108,14 +119,16 @@ class PagesController < ApplicationController
     @user.destroy
   end
 
-  def_authorization :show_users_being_followed, :authorize_all
-  def show_users_being_followed
+  def_authorization :users_being_followed, :authorize_all
+  def users_being_followed
+    @user = User.find(params[:user_id])
     @title = 'Following'
     @users = @user.followed_users.paginate(page: params[:page])
   end
 
-  def_authorization :show_followers, :authorize_all
-  def show_followers
+  def_authorization :followers, :authorize_all
+  def followers
+    @user = User.find(params[:user_id])
     @title = 'Followers'
     @users = @user.followers.paginate(page: params[:page])
   end
