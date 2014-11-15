@@ -1,0 +1,8 @@
+<%
+   if @success
+     flash[:success] = "Profile updated"
+     redirect_to @user
+   else
+     redirect_to :edit_user
+   end
+%>

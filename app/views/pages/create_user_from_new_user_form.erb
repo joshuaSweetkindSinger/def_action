@@ -1,0 +1,9 @@
+<%
+   if @success
+     flash[:success] = 'Welcome to the Sample App!'
+     redirect_to @user
+   else
+     flash[:errors] = @user.errors.full_messages
+     redirect_to :sign_up
+   end
+%>

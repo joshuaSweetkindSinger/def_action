@@ -1,24 +1,15 @@
 SampleApp::Application.routes.draw do
-  resources :users do
-    member do
-      get :following, :followers
-      post :follow
-      delete :unfollow
-    end
-  end
-
-  resources :sessions, only: [:create, :destroy]
-
-  root to: 'home_page#show'
-  match '/help', to: 'static_pages#help'
-  match '/about', to: 'static_pages#about'
-  match '/contact', to: 'static_pages#contact'
-  match '/sign_up', to: 'static_pages#sign_up'
-  match '/sign_in', to: 'static_pages#sign_in'
-  match '/signout', to: 'sessions#destroy', via: :delete
-  match '/create_post', to: 'static_pages#create_post', via: :post
-  match '/destroy_post', to: 'static_pages#destroy_post', via: :delete
-  match '/users_index', to: 'users_index_page#show', as: :users_index
+  root to: 'pages#home'
+  match '/about', to: 'pages#about'
+  match '/contact', to: 'pages#contact'
+  match '/help', to: 'pages#help'
+  match '/sign_up', to: 'pages#sign_up'
+  match '/sign_in', to: 'pages#sign_in_page'
+  match '/sign_in_to_session', to: 'pages#sign_in_to_session', via: :post
+  match '/sign_out', to: 'pages#sign_out_of_session', via: :delete
+  match '/create_post', to: 'pages#create_post', via: :post
+  match '/delete_post', to: 'pages#delete_post', via: :delete
+  match '/users_index', to: 'pages#users_index'
 
 
   # The priority is based upon order of creation:

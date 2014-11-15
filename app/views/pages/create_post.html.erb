@@ -1,0 +1,4 @@
+<%
+   flash[:error] = @post.errors.full_messages.join(',') if !@success
+   redirect_to :back
+%>
