@@ -108,26 +108,51 @@ class PagesController < ApplicationController
     @posts = @user.microposts.paginate(page: params[:page])
   end
 
-  def_sign_in :create_user_from_new_user_form, :sign_in_not_required
-  def create_user_from_new_user_form
+  def_sign_in :create_user, :sign_in_not_required
+  def create_user
+    # Action
     @user    = User.new(params[:user])
     @success = @user.save
     sign_in @user if @success
+
+    # UI
+    if @success
+      flash[:success] = 'Welcome to the Sample App!'
+      redirect_to @user
+    else
+      flash[:errors] = @user.errors.full_messages
+      redirect_to :sign_up
+    end
+
   end
 
   def_authorization :edit_user, :authorize_current_user_or_admin
   def edit_user
   end
 
-  def_authorization :edit_user, :authorize_current_user_or_admin
-  def update_user_from_edit_user_form
+  def_authorization :update_user, :authorize_current_user_or_admin
+  def update_user
+    # Action
     @success = @user.update_attributes(params[:user])
+
+    # UI
+    if @success
+      flash[:success] = "Profile updated"
+      redirect_to @user
+    else
+      redirect_to :edit_user
+    end
   end
 
   def_authorization :delete_user, :authorize_admin_when_not_user
   def delete_user
+    # Action
     @user.destroy
-  end
+
+    # UI
+    flash[:success] = 'User deleted'
+    redirect_to controller: PagesController, action: :users_index
+end
 
   def_authorization :users_being_followed, :authorize_all
   def users_being_followed
@@ -148,7 +173,10 @@ class PagesController < ApplicationController
   def follow_user
     current_user.follow!(@user)
     respond_to do |format|
-      format.html
+      format.html do
+        redirect_to :back
+      end
+
       format.js
     end
   end
