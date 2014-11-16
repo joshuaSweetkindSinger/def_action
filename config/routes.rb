@@ -14,6 +14,9 @@ SampleApp::Application.routes.draw do
   match '/users_being_followed/:user_id', to: 'pages#users_being_followed', as: :users_being_followed
   match '/followers/:user_id', to: 'pages#followers', as: :followers
   match '/edit_user/:user_id', to:'pages#edit_user', as: :edit_user
+  match '/delete_user/:user_id', to:'pages#delete_user', via: :delete, as: :delete_user
+  match '/follow_user/:id', via: :delete, to: 'pages#unfollow_user', as: :unfollow_user
+  match '/follow_user/:id', via: :post,   to: 'pages#follow_user',   as: :follow_user
 
 
 

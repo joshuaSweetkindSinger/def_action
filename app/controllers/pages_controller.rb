@@ -62,9 +62,14 @@ class PagesController < ApplicationController
   end
 
   # Destroy a micropost
-  def_authorization :destroy_post, :authorize_post_owner_or_admin
+  def_authorization :delete_post, :authorize_post_owner_or_admin
   def delete_post
+    # Action
     Micropost.find(params[:micropost_id]).destroy
+
+    # UI
+    flash[:success] = 'Post deleted'
+    redirect_to :back
   end
 
   def_sign_in :help, :sign_in_not_required
@@ -134,8 +139,8 @@ class PagesController < ApplicationController
   end
 
   # Cause the current user to follow the user whose id is params[:user_id]
-  def_authorization :follow, :authorize_all_when_not_user
-  def follow
+  def_authorization :follow_user, :authorize_all_when_not_user
+  def follow_user
     current_user.follow!(@user)
     respond_to do |format|
       format.html
@@ -144,8 +149,8 @@ class PagesController < ApplicationController
   end
 
   # Cause the current user to unfollow the user whose id is params[:user_id]
-  def_authorization :follow, :authorize_all
-  def unfollow
+  def_authorization :unfollow_user, :authorize_all
+  def unfollow_user
     @user = User.find(params[:user_id])
     current_user.unfollow!(@user)
     respond_to do |format|
@@ -154,7 +159,7 @@ class PagesController < ApplicationController
     end
   end
 
-  def_authorization :follow, :authorize_all
+  def_authorization :users_index, :authorize_all
   def users_index
     @users = User.paginate(page: params[:page], per_page: 10)
   end

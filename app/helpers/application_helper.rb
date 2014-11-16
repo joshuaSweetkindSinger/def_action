@@ -18,9 +18,9 @@ module ApplicationHelper
     if current_user?(post.user) || current_user.admin?
       link_to('Delete',
               {
-                controller: 'pages',
-                action:     'delete_post',
-                id:         post
+                controller:   'pages',
+                action:       'delete_post',
+                micropost_id: post
               },
               method: :delete,
               confirm: 'Really delete this post?',

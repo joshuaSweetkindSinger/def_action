@@ -83,8 +83,7 @@ class ApplicationController < ActionController::Base
 
   # The owner of a micropost or an admin can both manipulate a post.
   def authorize_post_owner_or_admin
-    @user = User.find(params[:user_id])
-    @post = Micropost.find(params[:post_id])
+    @post = Micropost.find(params[:micropost_id])
     current_user.admin? || current_user?(@post.user)
   end
 

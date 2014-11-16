@@ -23,9 +23,9 @@
    <h3><%= @title %></h3>
    <% if @users.any? %>
      <ul class = "users">
-       <%= render @users %>
+       <%= render partial: 'shared/user', collection: @users %>
      </ul>
-     <%= will_paginate %>
+     <%= will_paginate @users %>
    <% end %>
  </div>
 </div>
