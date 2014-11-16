@@ -1,4 +1,5 @@
 <%= form_for(@micropost, url: {controller: 'pages', action: 'create_post'}) do |f| %>
+  <%= hidden_field_tag 'user_id', @micropost.user_id %>
   <%= render 'shared/error_messages', object: f.object %>
   <div class = "field">
     <%= f.text_area :content, placeholder: 'Compose new micropost . . .' %>

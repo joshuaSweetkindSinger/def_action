@@ -58,7 +58,12 @@ class PagesController < ApplicationController
   # Create a new micropost from the home page.
   def_authorization :create_post, :authorize_current_user_or_admin
   def create_post
+    # Action
     @post, @success = @user.create_post(params[:micropost])
+
+    # UI
+    flash[:error] = @post.errors.full_messages.join(',') if !@success
+    redirect_to :back
   end
 
   # Destroy a micropost
