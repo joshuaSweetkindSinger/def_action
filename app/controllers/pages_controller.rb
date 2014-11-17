@@ -29,9 +29,15 @@ class PagesController < ApplicationController
 
   # Show the home page
   def_authorization :home, :authorize_all
-  def home
-    @micropost = current_user.microposts.build # empty micropost for form template
-    @posts     = current_user.feed.paginate(page: params[:page])
+  def_action home do
+    for_sign_in {require_sign_in}
+
+    for_authorization {authorize_all}
+
+    for_action do
+      @micropost = current_user.microposts.build # empty micropost for form template
+      @posts     = current_user.feed.paginate(page: params[:page])
+    end
   end
 
   # Cause the user to be signed in with the supplied credentials
