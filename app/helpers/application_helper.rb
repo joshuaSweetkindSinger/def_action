@@ -48,8 +48,12 @@ module ApplicationHelper
   end
 
   # Returns true when the specified user is the current user; otherwise, false.
+  # Note, there is a corner case in which u == nil and there is no current user.
+  # In that case, one could argue that the current user *is* u, but instead we return false
+  # because the assumptions of the predicate are not operative: there *is* no current user, so
+  # the current user is not u, even when u is nil.
   def current_user? (u)
-    u == current_user
+    u && (u == current_user)
   end
 
   def signed_in?
