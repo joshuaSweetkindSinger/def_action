@@ -4,19 +4,23 @@
 # invoked via the route "/home".
 #
 # Most of the actions cannot be invoked unless the user has signed in, which action
-# makes him become the current_user().
+# makes him become the current_user(). This check is handled by a before_filter defined on the
+# parent ApplicationController, which takes a strict view, requiring sign in for all things
+# that are not explicitly allowed without sign in.
 #
 # Many of the actions cannot be invoked unless the user has signed in and has appropriate
-# authorization to invoke the action. These checks are handled by before filters, which
+# authorization to invoke the action. These checks are handled by before filters on
+# # the parent ApplicationController, which
 # take a strict view, disallowing all actions unless the action has explicitly been declared
 # to be allowable without signin, or unless the action has explicitly been declared
 # to be authorized for the current user. Making declarations regarding sign-in and authorization
 # is handled by the functions def_sign_in() and def_authorization()
 
-class PagesController < ApplicationController
-  before_filter :check_sign_in_requirements_for_action
-  before_filter :check_authorization_for_action
+# Two very common objects in this app are @user and @micropost. They are dereferenced
+# from the params by a before_filter and are available to each action defined below,
+# so long as :user_id and/or :micropost_id are given in params, respectively.
 
+class PagesController < ApplicationController
   def initialize
     super
     @sign_in_conditions = {} # Maps action symbols to methods which, when run, return true if the action is allowed without signin.
@@ -56,7 +60,7 @@ class PagesController < ApplicationController
   end
 
   # Create a new micropost from the home page.
-  def_authorization :create_post, :authorize_current_user_or_admin
+  def_authorization :create_post, :authorize_action_on_self
   def create_post
     # Action
     @post, @success = @user.create_post(params[:micropost])
@@ -67,7 +71,7 @@ class PagesController < ApplicationController
   end
 
   # Destroy a micropost
-  def_authorization :delete_post, :authorize_post_owner_or_admin
+  def_authorization :delete_post, :authorize_post_owner
   def delete_post
     # Action
     Micropost.find(params[:micropost_id]).destroy
@@ -104,7 +108,6 @@ class PagesController < ApplicationController
 
   def_sign_in :user_profile, :sign_in_not_required
   def user_profile
-    @user = User.find(params[:user_id])
     @posts = @user.microposts.paginate(page: params[:page])
   end
 
@@ -118,7 +121,7 @@ class PagesController < ApplicationController
     # UI
     if @success
       flash[:success] = 'Welcome to the Sample App!'
-      redirect_to @user
+      redirect_to root_path
     else
       flash[:errors] = @user.errors.full_messages
       redirect_to :sign_up
@@ -126,11 +129,11 @@ class PagesController < ApplicationController
 
   end
 
-  def_authorization :edit_user, :authorize_current_user_or_admin
+  def_authorization :edit_user, :authorize_action_on_self
   def edit_user
   end
 
-  def_authorization :update_user, :authorize_current_user_or_admin
+  def_authorization :update_user, :authorize_action_on_self
   def update_user
     # Action
     @success = @user.update_attributes(params[:user])
@@ -156,14 +159,12 @@ end
 
   def_authorization :users_being_followed, :authorize_all
   def users_being_followed
-    @user = User.find(params[:user_id])
     @title = 'Following'
     @users = @user.followed_users.paginate(page: params[:page])
   end
 
   def_authorization :followers, :authorize_all
   def followers
-    @user = User.find(params[:user_id])
     @title = 'Followers'
     @users = @user.followers.paginate(page: params[:page])
   end
@@ -184,7 +185,6 @@ end
   # Cause the current user to unfollow the user whose id is params[:user_id]
   def_authorization :unfollow_user, :authorize_all
   def unfollow_user
-    @user = User.find(params[:user_id])
     current_user.unfollow!(@user)
     respond_to do |format|
       format.html {redirect_to :back}

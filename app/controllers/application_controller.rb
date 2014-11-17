@@ -2,7 +2,18 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   include ApplicationHelper
 
-    # ============ Sign In Logic
+  before_filter :get_object_references
+  before_filter :check_sign_in_requirements_for_action
+  before_filter :check_authorization_for_action
+
+
+  # Get ids from the params object, like :user_id, and turn them into
+  # actual objects, lik @user
+  def get_object_references
+    @user = (User.find(params[:user_id]) if params[:user_id]) || current_user
+    @post = Micropost.find(params[:micropost_id]) if params[:micropost_id]
+  end
+  # ============ Sign In Logic
     # Most actions require a user to be signed in first. This section defines helpers
     # to aid in determining whether a user needs to be signed in. Use def_sign_in to
     # define conditions under which an action requires sign in. If no conditions are specified,
@@ -45,9 +56,9 @@ class ApplicationController < ActionController::Base
     end
 
   # ============== Authorization Logic
-  # Many actions require the user to have special permissions before
+  # Many actions require the current user to have special permissions before
   # they can be executed. This section defines helpers
-  # to aid in determining whether a user has correct permissions to execute the requested action.
+  # to aid in determining whether the current user has correct permissions to execute the requested action.
   # Use def_authorization to define the authorization conditions pertaining to an action.
   # If no authorization conditions are specified, the action will not be allowed by default, unless
   # there are no sign-in conditions, in which case the default is to allow the action. (If the action
@@ -56,7 +67,7 @@ class ApplicationController < ActionController::Base
 
   # Associate the specified authorization method with the specified action.
   # When the controller is called upon to execute an action like :create_post,
-  # it first calls the associated method to see whether the user has sufficient permission to take
+  # it first calls the associated method to see whether the current user has sufficient permission to take
   # the action. If the method returns true, then the action can be taken.
   @@authorization_conditions = {}
   def self.def_authorization (action, method)
@@ -70,33 +81,33 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Return true if the current user has permission to execute the requested action.
+  # If there is no current user (not signed in), then only execute the requested action
+  # if it is allowed without sign-in.
   def action_authorized?
     action_allowed_without_sign_in? || ((authorization_condition = @@authorization_conditions[action_name.to_sym]) && send(authorization_condition))
   end
 
+  # ========== Authorization Condition methods
+  # These methods define typical cases for permitting an action.
 
   # The current user and admin can both take actions on @user.
-  def authorize_current_user_or_admin
-    @user = User.find(params[:user_id]) || current_user
+  def authorize_action_on_self
     current_user?(@user) || current_user.admin?
   end
 
   # The owner of a micropost or an admin can both manipulate a post.
-  def authorize_post_owner_or_admin
-    @post = Micropost.find(params[:micropost_id])
+  def authorize_post_owner
     current_user.admin? || current_user?(@post.user)
   end
 
   # Allow admin to operate on @user so long as @user is not the admin himself.
   def authorize_admin_when_not_user
-    @user = User.find(params[:user_id])
-
     current_user.admin? && !current_user?(@user)
   end
 
   # Allow anyone to operate on @user so long as @user is not the current user himself.
   def authorize_all_when_not_user
-    @user = User.find(params[:user_id])
     !current_user?(@user)
   end
 
