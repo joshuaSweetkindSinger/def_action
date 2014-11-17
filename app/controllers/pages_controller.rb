@@ -27,7 +27,7 @@ class PagesController < ApplicationController
 
   # Show the home page
   def_action :home do |action|
-    action.for_authorization {authorize_action_on_self}
+    action.permitted? {permit_action_on_self}
     action.main do
       @micropost = current_user.microposts.build # empty micropost for form template
       @posts     = current_user.feed.paginate(page: params[:page])
@@ -35,32 +35,35 @@ class PagesController < ApplicationController
   end
 
   # Cause the user to be signed in with the supplied credentials
-  def_authorization :sign_in_to_session, :authorize_all
-  def sign_in_to_session
+  def_action :sign_in_to_session do |action|
+    action.permitted? {true}
 
-    # Action
-    @user = User.find_by_email(params[:email])
-    @authenticated = @user && @user.authenticate(params[:password])
-    sign_in @user if @authenticated
+    action.main do
 
-    # UI
-    if @authenticated
-      redirect_back_or root_path
-    else
-      flash[:error] = 'Invalid email/password combination'
-      redirect_to sign_in_path
+      # Action
+      @user = User.find_by_email(params[:email])
+      @authenticated = @user && @user.authenticate(params[:password])
+      sign_in @user if @authenticated
+
+      # UI
+      if @authenticated
+        redirect_back_or root_path
+      else
+        flash[:error] = 'Invalid email/password combination'
+        redirect_to sign_in_path
+      end
     end
   end
 
   # Cause the user to be signed out.
-  def_authorization :sign_out_of_session, :authorize_all
+  def_authorization(:sign_out_of_session) {true}
   def sign_out_of_session
     sign_out
     redirect_to sign_in_path
   end
 
   # Create a new micropost from the home page.
-  def_authorization :create_post, :authorize_action_on_self
+  def_authorization :create_post, &:permit_action_on_self
   def create_post
     # Action
     @post, @success = @user.create_post(params[:micropost])
@@ -71,7 +74,7 @@ class PagesController < ApplicationController
   end
 
   # Destroy a micropost
-  def_authorization :delete_post, :authorize_post_owner
+  def_authorization :delete_post, &:permit_post_owner
   def delete_post
     # Action
     Micropost.find(params[:micropost_id]).destroy
@@ -81,37 +84,37 @@ class PagesController < ApplicationController
     redirect_to :back
   end
 
-  def_authorization :help, :authorize_all
+  def_authorization(:help) {true}
   def help
   end
 
-  def_authorization :about, :authorize_all
+  def_authorization :about do true; end
   def about
   end
 
-  def_authorization :contact, :authorize_all
+  def_authorization :contact do true; end
   def contact
   end
 
-  def_authorization :sign_in_page, :authorize_all
+  def_authorization :sign_in_page do true; end
   def sign_in_page
   end
 
 
   # ================== Users
 
-  def_authorization :sign_up, :authorize_all
+  def_authorization :sign_up do true; end
   def sign_up
     @user ||= User.new
   end
 
 
-  def_authorization :user_profile, :authorize_all
+  def_authorization :user_profile do true; end
   def user_profile
     @posts = @user.microposts.paginate(page: params[:page])
   end
 
-  def_authorization :create_user, :authorize_all
+  def_authorization :create_user do true; end
   def create_user
     # Action
     @user    = User.new(params[:user])
@@ -129,11 +132,11 @@ class PagesController < ApplicationController
 
   end
 
-  def_authorization :edit_user, :authorize_action_on_self
+  def_authorization :edit_user, &:permit_action_on_self
   def edit_user
   end
 
-  def_authorization :update_user, :authorize_action_on_self
+  def_authorization :update_user, &:permit_action_on_self
   def update_user
     # Action
     @success = @user.update_attributes(params[:user])
@@ -147,7 +150,7 @@ class PagesController < ApplicationController
     end
   end
 
-  def_authorization :delete_user, :authorize_admin_when_not_user
+  def_authorization :delete_user, &:permit_admin_when_not_user
   def delete_user
     # Action
     @user.destroy
@@ -157,20 +160,20 @@ class PagesController < ApplicationController
     redirect_to controller: PagesController, action: :users_index
 end
 
-  def_authorization :users_being_followed, :authorize_all
+  def_authorization :users_being_followed do true; end
   def users_being_followed
     @title = 'Following'
     @users = @user.followed_users.paginate(page: params[:page])
   end
 
-  def_authorization :followers, :authorize_all
+  def_authorization :followers do true; end
   def followers
     @title = 'Followers'
     @users = @user.followers.paginate(page: params[:page])
   end
 
   # Cause the current user to follow the user whose id is params[:user_id]
-  def_authorization :follow_user, :authorize_all_when_not_user
+  def_authorization :follow_user, &:permit_all_when_not_user
   def follow_user
     current_user.follow!(@user)
     respond_to do |format|
@@ -183,7 +186,7 @@ end
   end
 
   # Cause the current user to unfollow the user whose id is params[:user_id]
-  def_authorization :unfollow_user, :authorize_all
+  def_authorization :unfollow_user do true; end
   def unfollow_user
     current_user.unfollow!(@user)
     respond_to do |format|
@@ -192,7 +195,7 @@ end
     end
   end
 
-  def_authorization :users_index, :authorize_all
+  def_authorization :users_index do true; end
   def users_index
     @users = User.paginate(page: params[:page], per_page: 10)
   end

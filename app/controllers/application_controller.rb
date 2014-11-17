@@ -47,9 +47,9 @@ class ApplicationController < ActionController::Base
     # This language construct is used inside of def_action to specify the sign-in conditions under which
     # the action can be executed. It should take a block that, when executed in the context of the action,
     # which means that params will be defined, returns true if the action is permitted.
-    def for_authorization (&authorization_condition_block)
+    def permitted? (&authorization_condition_block)
       puts "creating authorization #{@controller_class}, #{@action_name}"
-      @controller_class.def_authorization(@action_name, authorization_condition_block)
+      @controller_class.def_authorization(@action_name, &authorization_condition_block)
     end
 
     # This language construct specifies the main body of the controller action being defined.
@@ -59,7 +59,7 @@ class ApplicationController < ActionController::Base
       @controller_class.class_eval do
         define_method(__action_name__) do
           puts "Calling main method for #{__action_name__} with block #{action_block}"
-          action_block.call
+          instance_eval(&action_block)
         end
       end
     end
@@ -76,17 +76,18 @@ class ApplicationController < ActionController::Base
   # can be taken without sign in, then there's no reason to prohibit it. Checking permissions would
   # require sign in first anyway.)
 
-  # Associate the specified authorization proc with the specified action.
+  # Associate the specified authorization block with the specified action.
   # When the controller is called upon to execute an action like :create_post,
-  # it first calls the associated proc to see whether the current user has sufficient permission to take
-  # the action. If the proc returns true, then the action can be taken.
-  # IMPLEMENTATION: We store the proc on a hash table with associated key <action>, which is the name
+  # it first calls the associated block in the context of the controller object
+  # to see whether the current user has sufficient permission to take
+  # the action. If the block returns true, then the action can be taken.
+  # IMPLEMENTATION: We store the block on a hash table with associated key <action>, which is the name
   # of the controller action to be executed. Then, at run time, the before_filter check_authorization_for_action
-  # calls up the proc and runs it to determine whether the action is allowed.
+  # calls up the block in the context of the controller and runs it to determine whether the action is allowed.
   @@authorization_conditions = {}
-  def self.def_authorization (action, proc)
+  def self.def_authorization (action, &block)
     @@authorization_conditions ||= {}
-    @@authorization_conditions[action] = proc
+    @@authorization_conditions[action] = block
   end
 
   # Short-circuit the running of the currently requested controller action if it is not authorized.
@@ -102,7 +103,7 @@ class ApplicationController < ActionController::Base
   # The parameter action is a symbol naming the action, e.g., :create_user
   def action_authorized? (action)
     if (authorization_condition = @@authorization_conditions[action])
-      authorization_condition.call
+      instance_eval(&authorization_condition) # Make sure the block evaluates in the proper context, with the current controller object as self.
     end
   end
 
@@ -112,28 +113,23 @@ class ApplicationController < ActionController::Base
   # must explicitly check for this. They can't assume that there is a signed-in user.
 
   # The current user and admin can both take actions on @user.
-  def authorize_action_on_self
+  def permit_action_on_self
     current_user?(@user) || current_user.admin? if current_user
   end
 
   # The owner of a micropost or an admin can both manipulate a post.
-  def authorize_post_owner
+  def permit_post_owner
     current_user.admin? || current_user?(@post.user) if current_user
   end
 
   # Allow admin to operate on @user so long as @user is not the admin himself.
-  def authorize_admin_when_not_user
+  def permit_admin_when_not_user
     current_user.admin? && !current_user?(@user) if current_user
   end
 
   # Allow anyone to operate on @user so long as @user is not the current user himself.
-  def authorize_all_when_not_user
+  def permit_all_when_not_user
     !current_user?(@user) if current_user
-  end
-
-  # This operation has no authorization restrictions
-  def authorize_all
-    true
   end
 
 end
