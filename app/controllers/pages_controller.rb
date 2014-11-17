@@ -14,7 +14,7 @@
 # take a strict view, disallowing all actions unless the action has explicitly been declared
 # to be allowable without signin, or unless the action has explicitly been declared
 # to be authorized for the current user. Making declarations regarding sign-in and authorization
-# is handled by the functions def_sign_in() and def_authorization()
+# is handled by the functions def_authorization() and def_authorization()
 
 # Two very common objects in this app are @user and @micropost. They are dereferenced
 # from the params by a before_filter and are available to each action defined below,
@@ -23,25 +23,19 @@
 class PagesController < ApplicationController
   def initialize
     super
-    @sign_in_conditions = {} # Maps action symbols to methods which, when run, return true if the action is allowed without signin.
-    @authorization_conditions = {} # Maps action symbols to methods which, when run, return true if the action is authorized for the current user.
   end
 
   # Show the home page
-  def_authorization :home, :authorize_all
-  def_action home do
-    for_sign_in {require_sign_in}
-
-    for_authorization {authorize_all}
-
-    for_action do
+  def_action :home do |action|
+    action.for_authorization {authorize_action_on_self}
+    action.main do
       @micropost = current_user.microposts.build # empty micropost for form template
       @posts     = current_user.feed.paginate(page: params[:page])
     end
   end
 
   # Cause the user to be signed in with the supplied credentials
-  def_sign_in :sign_in_to_session, :sign_in_not_required
+  def_authorization :sign_in_to_session, :authorize_all
   def sign_in_to_session
 
     # Action
@@ -59,7 +53,7 @@ class PagesController < ApplicationController
   end
 
   # Cause the user to be signed out.
-  def_sign_in :sign_out_of_session, :sign_in_not_required
+  def_authorization :sign_out_of_session, :authorize_all
   def sign_out_of_session
     sign_out
     redirect_to sign_in_path
@@ -87,37 +81,37 @@ class PagesController < ApplicationController
     redirect_to :back
   end
 
-  def_sign_in :help, :sign_in_not_required
+  def_authorization :help, :authorize_all
   def help
   end
 
-  def_sign_in :about, :sign_in_not_required
+  def_authorization :about, :authorize_all
   def about
   end
 
-  def_sign_in :contact, :sign_in_not_required
+  def_authorization :contact, :authorize_all
   def contact
   end
 
-  def_sign_in :sign_in_page, :sign_in_not_required
+  def_authorization :sign_in_page, :authorize_all
   def sign_in_page
   end
 
 
   # ================== Users
 
-  def_sign_in :sign_up, :sign_in_not_required
+  def_authorization :sign_up, :authorize_all
   def sign_up
     @user ||= User.new
   end
 
 
-  def_sign_in :user_profile, :sign_in_not_required
+  def_authorization :user_profile, :authorize_all
   def user_profile
     @posts = @user.microposts.paginate(page: params[:page])
   end
 
-  def_sign_in :create_user, :sign_in_not_required
+  def_authorization :create_user, :authorize_all
   def create_user
     # Action
     @user    = User.new(params[:user])

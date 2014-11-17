@@ -15,40 +15,56 @@ class ApplicationController < ActionController::Base
 
   # ============ Action Definition Logic
   # This section defines def_action, which is a modified form of def that takes, in addition to the main body
-  # of the method, specs called for_sign_in and for_authorization. These specify the conditions under which the
+  # of the method, a spec called for_authorization. This specifies the conditions under which the
   # action may legitimately be executed. The example below defines a controller action named 'home'
-  # that requires sign in before it can be invoked, and that allows all users to invoke it (once signed in).
+  # that that allows all users to invoke it (once signed in).
   #
-  # def_action :home do
-  #   for_sign_in {require_sign_in} # specify that the user must be signed in before the action can be executed
-  #   for_authorization {authorize_action_on_self} # specify that all users can request this action.
-  #   for_action do  # specify the main body of the action before handing off to view.
+  # def_action :home do |action|
+  #   action.for_authorization {authorize_action_on_self} # specify that all (signed-in) users can request this action.
+  #   action.main do  # specify the main body of the action before handing off to view.
   #     @micropost = current_user.microposts.build # empty micropost for form template
   #     @posts     = current_user.feed.paginate(page: params[:page])
   #   end
   # end
 
+
   # This is the toplevel method for defining an action that knows how to specify its own
   # conditions for sign in and action-authorization. Implementation-wise, it just serves
   # as syntactic syntactic wrapping to give lexical scope to the <name> of the action.
-  def self.def_action (name)
-    @__name__ = name # kludge to give inner language constructs like for_sign_in access to the name of the action.
-    yield
+  def self.def_action (action_name)
+    puts "defining action #{action_name}"
+    yield ActionSpec.new(self, action_name)
   end
 
-  # This language construct is used inside of def_action to specify the sign-in conditions under which
-  # the action can be executed. It should take a block that, when executed in the context of the action,
-  # which means that params will be defined, returns true if the action is permitted.
-    def self.for_authorization (&authorization_condition_block)
-    def_authorization(@_name__, authorization_condition_block)
-  end
-
-  def self.for_action (&action_block)
-    define_method(@__name__) do
-      action_block.call
+  # This is a helper class that holds information about the action that is being defined via def_action.
+  class ActionSpec
+    def initialize (controller_class, action_name)
+      puts "creating action spec #{controller_class}, #{action_name}"
+      @controller_class = controller_class
+      @action_name      = action_name
     end
-  end
 
+    # This language construct is used inside of def_action to specify the sign-in conditions under which
+    # the action can be executed. It should take a block that, when executed in the context of the action,
+    # which means that params will be defined, returns true if the action is permitted.
+    def for_authorization (&authorization_condition_block)
+      puts "creating authorization #{@controller_class}, #{@action_name}"
+      @controller_class.def_authorization(@action_name, authorization_condition_block)
+    end
+
+    # This language construct specifies the main body of the controller action being defined.
+    def main (&action_block)
+      puts "creating main #{@controller_class}, #{@action_name}"
+      __action_name__ = @action_name # make this lexically visible to the method being defined below, because class_eval changes our binding environment.
+      @controller_class.class_eval do
+        define_method(__action_name__) do
+          puts "Calling main method for #{__action_name__} with block #{action_block}"
+          action_block.call
+        end
+      end
+    end
+
+  end
 
   # ============== Authorization Logic
   # Many actions require the current user to have special permissions before
