@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="05ba27f1-b4da-4c54-830d-7514e935df8f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/application_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/application_controller.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/pages_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/pages_controller.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -39,14 +38,14 @@
     <file path="/en.yml" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1413912940519" ignored="false" />
     <file path="/authentication_pages_spec.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415246663058" ignored="false" />
     <file path="/sessions_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415907913234" ignored="false" />
-    <file path="/application_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416260874219" ignored="false" />
+    <file path="/application_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416292983453" ignored="false" />
     <file path="/20141022170032_add_remember_token_to_users.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1413997302972" ignored="false" />
     <file path="/sessions_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415906540010" ignored="false" />
     <file path="/signing_in.feature" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414033355178" ignored="false" />
     <file path="/authentication_steps.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414077507313" ignored="false" />
     <file path="/env.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414076117661" ignored="false" />
     <file path="/edit.html.erb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414519250673" ignored="false" />
-    <file path="/temp.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416260946439" ignored="false" />
+    <file path="/temp.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416261374513" ignored="false" />
     <file path="/request_sandbox.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414171077652" ignored="false" />
     <file path="/sample_data.rake" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414767989674" ignored="false" />
     <file path="/_user.html.erb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416099722888" ignored="false" />
@@ -90,7 +89,7 @@
     <file path="/page_conroller_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415896238866" ignored="false" />
     <file path="/page_controller_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415896783019" ignored="false" />
     <file path="/page_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415907997773" ignored="false" />
-    <file path="/pages_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416260884866" ignored="false" />
+    <file path="/pages_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416293759110" ignored="false" />
     <file path="/pages_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415900187024" ignored="false" />
     <file path="/helpers.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415900728681" ignored="false" />
     <file path="/users_index_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415902153748" ignored="false" />
@@ -142,7 +141,7 @@
       <file leaf-file-name="pages_controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="189" column="19" selection-start="5245" selection-end="5245" vertical-scroll-proportion="0.5086207">
+            <state line="82" column="6" selection-start="3031" selection-end="3031" vertical-scroll-proportion="0.70397115">
               <folding />
             </state>
           </provider>
@@ -160,7 +159,7 @@
       <file leaf-file-name="application_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="132" column="5" selection-start="6626" selection-end="6626" vertical-scroll-proportion="0.0">
+            <state line="137" column="0" selection-start="5314" selection-end="5314" vertical-scroll-proportion="3.4230769">
               <folding />
             </state>
           </provider>
@@ -1307,14 +1306,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="132" column="5" selection-start="6626" selection-end="6626" vertical-scroll-proportion="0.0">
+        <state line="137" column="0" selection-start="5314" selection-end="5314" vertical-scroll-proportion="3.4230769">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="189" column="19" selection-start="5245" selection-end="5245" vertical-scroll-proportion="0.5086207">
+        <state line="82" column="6" selection-start="3031" selection-end="3031" vertical-scroll-proportion="0.70397115">
           <folding />
         </state>
       </provider>

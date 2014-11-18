@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   include ApplicationHelper
 
   before_filter :get_object_references
-  before_filter :check_authorization_for_action
+  before_filter :check_permission_for_action
 
 
   # Get ids from the params object, like :user_id, and turn them into
@@ -14,98 +14,136 @@ class ApplicationController < ActionController::Base
   end
 
   # ============ Action Definition Logic
-  # This section defines def_action, which is a modified form of def that takes, in addition to the main body
-  # of the method, a spec called for_authorization. This specifies the conditions under which the
-  # action may legitimately be executed. The example below defines a controller action named 'home'
-  # that that allows all users to invoke it (once signed in).
+  # This section defines constructs for specifying a controller action based on the following framework:
+  # an action has these parts:
+  #  - a permission check, which, if it does not pass, results in the action not being executed.
+  #  - a main body, which executes the api-level logic of the controller action.
+  #  - a ui body, which updates the user interface after the main action has taken place.
+  #
+  # This section also defines def_action, a modified form of def that allows one to define the above parts
+  # all in the same place. Below is an example.
   #
   # def_action :home do |action|
-  #   action.for_authorization {authorize_action_on_self} # specify that all (signed-in) users can request this action.
+  #   action.permitted? {authorize_action_on_self} # specify that all (signed-in) users can request this action.
   #   action.main do  # specify the main body of the action before handing off to view.
   #     @micropost = current_user.microposts.build # empty micropost for form template
   #     @posts     = current_user.feed.paginate(page: params[:page])
+  #   end
+  #   action.ui do
+  #     render 'home_page'
   #   end
   # end
 
 
   # This is the toplevel method for defining an action that knows how to specify its own
-  # conditions for sign in and action-authorization. Implementation-wise, it just serves
-  # as syntactic syntactic wrapping to give lexical scope to the <name> of the action.
-  def self.def_action (action_name)
-    puts "defining action #{action_name}"
-    yield ActionSpec.new(self, action_name)
+  # permission checks, main body, and ui components.
+  def self.def_action (action)
+    spec = ActionSpec.new(self, action) # This crucially holds information about controller class and action name.
+    yield spec  # This defines the various action methods: permissions check, main action, ui action.
+
+    # This combines the ui and main methods defined in the yield above into a single method with the proper name.
+    # It does not wrap up the permission check, which is handled separately by a before_filter. This implementation is important, because
+    # there is no guarantee that a developer will use def_action to create his/her actions. Using a before_filter
+    # guarantees that all controller actions are subject to permissions checks.
+    main = main_action_name(action)
+    ui   = ui_action_name(action)
+    define_method(action) do
+      send main
+      send ui if respond_to?(ui)
+    end
   end
 
   # This is a helper class that holds information about the action that is being defined via def_action.
   class ActionSpec
     def initialize (controller_class, action_name)
-      puts "creating action spec #{controller_class}, #{action_name}"
       @controller_class = controller_class
       @action_name      = action_name
     end
 
-    # This language construct is used inside of def_action to specify the sign-in conditions under which
-    # the action can be executed. It should take a block that, when executed in the context of the action,
-    # which means that params will be defined, returns true if the action is permitted.
-    def permitted? (&authorization_condition_block)
-      puts "creating authorization #{@controller_class}, #{@action_name}"
-      @controller_class.def_authorization(@action_name, &authorization_condition_block)
+    # Define the permission-checking method of the action.
+    def permitted? (&block)
+      @controller_class.def_permission(@action_name, &block)
     end
 
-    # This language construct specifies the main body of the controller action being defined.
-    def main (&action_block)
-      puts "creating main #{@controller_class}, #{@action_name}"
-      __action_name__ = @action_name # make this lexically visible to the method being defined below, because class_eval changes our binding environment.
-      @controller_class.class_eval do
-        define_method(__action_name__) do
-          puts "Calling main method for #{__action_name__} with block #{action_block}"
-          instance_eval(&action_block)
-        end
-      end
+    # Define the main-body method of the action.
+    def main (&block)
+      @controller_class.def_main_action(@action_name, &block)
     end
 
+    # Define the ui-body method of the action.
+    def ui (&block)
+      @controller_class.def_ui_action(@action_name, &block)
+    end
   end
 
-  # ============== Authorization Logic
+
+  def self.main_action_name (action)
+    "#{action}_main"
+  end
+
+
+  def self.def_main_action (action, &block)
+    define_method(main_action_name(action)) do
+      instance_eval(&block)
+    end
+  end
+
+  def self.ui_action_name (action)
+    "#{action}_ui"
+  end
+
+
+  def self.def_ui_action (action, &block)
+    define_method(ui_action_name(action)) do
+      instance_eval(&block)
+    end
+  end
+
+
+
+  # ============== Permission Logic
   # Many actions require the current user to have special permissions before
   # they can be executed. This section defines helpers
   # to aid in determining whether the current user has correct permissions to execute the requested action.
-  # Use def_authorization to define the authorization conditions pertaining to an action.
-  # If no authorization conditions are specified, the action will not be allowed by default, unless
-  # there are no sign-in conditions, in which case the default is to allow the action. (If the action
-  # can be taken without sign in, then there's no reason to prohibit it. Checking permissions would
-  # require sign in first anyway.)
+  # Use def_permission to define the permission conditions pertaining to an action.
+  # If no permission conditions are specified, the action will not be allowed by default.
 
-  # Associate the specified authorization block with the specified action.
+  # Associate the specified permission block with the specified action.
   # When the controller is called upon to execute an action like :create_post,
-  # it first calls the associated block in the context of the controller object
+  # it first calls the associated permission block in the context of the controller object
   # to see whether the current user has sufficient permission to take
   # the action. If the block returns true, then the action can be taken.
-  # IMPLEMENTATION: We store the block on a hash table with associated key <action>, which is the name
-  # of the controller action to be executed. Then, at run time, the before_filter check_authorization_for_action
-  # calls up the block in the context of the controller and runs it to determine whether the action is allowed.
-  @@authorization_conditions = {}
-  def self.def_authorization (action, &block)
-    @@authorization_conditions ||= {}
-    @@authorization_conditions[action] = block
+  #
+  # IMPLEMENTATION: We define a method whose name is a function of action and whose body is the one supplied.
+  def self.def_permission (action, &block)
+    define_method(permission_check_name(action)) do
+      instance_eval(&block)
+    end
   end
+
+  def self.permission_check_name (action)
+    "check_permission_for_#{action}_action"
+  end
+
 
   # Short-circuit the running of the currently requested controller action if it is not authorized.
   # Note: action_name() is a method that is defined in the context of the controller.
   # It returns params[:action_name], which is the name of the action being requested.
-  def check_authorization_for_action
-    if !action_authorized?(action_name.to_sym)
+  def check_permission_for_action
+    if !action_permitted?(action_name)
+      # redirect_to sign_in_path
       redirect_to :back, notice: 'You do not have permission to execute this action.'
     end
   end
 
+
   # Return true if the current user has permission to execute the requested controller action.
   # The parameter action is a symbol naming the action, e.g., :create_user
-  def action_authorized? (action)
-    if (authorization_condition = @@authorization_conditions[action])
-      instance_eval(&authorization_condition) # Make sure the block evaluates in the proper context, with the current controller object as self.
-    end
+  def action_permitted? (action)
+    permission_check = self.class.permission_check_name(action)
+    respond_to?(permission_check) && send(permission_check)
   end
+
 
   # ========== Authorization Condition methods
   # These methods define typical cases for permitting an action. Note that virtually all
