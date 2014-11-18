@@ -1,5 +1,10 @@
 module ApplicationHelper
 
+  # ================= Auxiliaries
+
+
+  # ================================
+
   # Returns the full title on a per-page basis.
   def full_title(page_title)
     base_title = "Sample App"
@@ -66,22 +71,16 @@ module ApplicationHelper
 
   # Take the user to the saved ":return_to" page, or to the specified default
   # page if there is no :return_to page saved for the session.
-  def redirect_back_or (default)
-    redirect_to(session[:return_to] || default)
-    session.delete(:return_to)
+  def redirect_to_requested_url (default)
+    redirect_to(session[:requested_url] || default)
+    session.delete(:requested_url)
   end
 
   # Save the requested path to the :return_to key on the session, for access later.
   def cache_requested_url
-    session[:return_to] = request.fullpath
+    session[:requested_url] = request.fullpath
   end
 
-  # Save the path of the current url so that we can return to it on redirect_to
-  # For example, when deleting a micropost from a page, we delete the post and then
-  # issue a redirect back to the current page.
-  def cache_current_url
-    session[:current_url] = request.fullpath
-  end
 
   def gravatar_for (user, options = {size: 50})
     gravatar_id = Digest::MD5::hexdigest(user.email.downcase)

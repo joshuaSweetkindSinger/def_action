@@ -9,11 +9,13 @@ class ApplicationController < ActionController::Base
   # Get ids from the params object, like :user_id, and turn them into
   # actual objects, lik @user
   def get_object_references
-    @user = (User.find(params[:user_id]) if params[:user_id]) || current_user
+    @user = (User.find(params[:user_id]) if params[:user_id]) ||
+            (User.find(params[:user][:id]) if params[:user] && params[:user][:id]) ||
+            current_user
     @post = Micropost.find(params[:micropost_id]) if params[:micropost_id]
   end
 
-  # ============ Action Definition Logic
+    # ============ Action Definition Logic
   # This section defines constructs for specifying a controller action based on the following framework:
   # an action has these parts:
   #  - a permission check, which, if it does not pass, results in the action not being executed.
@@ -29,9 +31,13 @@ class ApplicationController < ActionController::Base
   #     @micropost = current_user.microposts.build # empty micropost for form template
   #     @posts     = current_user.feed.paginate(page: params[:page])
   #   end
+  #
+  #   # This is an optional section that specifies ui actions.
   #   action.ui do
   #     render 'home_page'
   #   end
+  #
+  #   action.route(path: '/user_profile/:id') # this is an optional route specification. If not supplied, a default is generated.
   # end
 
 
@@ -48,9 +54,11 @@ class ApplicationController < ActionController::Base
     main = main_action_name(action)
     ui   = ui_action_name(action)
     define_method(action) do
-      send main
+      send main if respond_to?(main)
       send ui if respond_to?(ui)
     end
+
+    @routes[action] ||= RouteSpec.new(action)
   end
 
   # This is a helper class that holds information about the action that is being defined via def_action.
@@ -73,6 +81,10 @@ class ApplicationController < ActionController::Base
     # Define the ui-body method of the action.
     def ui (&block)
       @controller_class.def_ui_action(@action_name, &block)
+    end
+
+    def route (keyword_args = {})
+      @controller_class.routes[@action_name] = RouteSpec.new(@action_name, keyword_args)
     end
   end
 
@@ -100,6 +112,48 @@ class ApplicationController < ActionController::Base
   end
 
 
+  # ========= Routes
+
+  def self.routes
+    @routes
+  end
+
+  # A helper class for specifying route information.
+  # Example: route = RouteSpec.new(:user_profile, path: '/user_profile/:id')
+  #
+  # Aliases
+  # The :verb component can also be specified using the :via keyword.
+  # The :name component can also be specified using the :as keyword
+  #
+  # Defaults
+  # The :verb, :name , :to, and :path keyword args are defaulted if no name or path is supplied.
+  # :verb value defaults to :get
+  # :name value defaults to action
+  # :to value defaults to 'pages/<action>'
+  # :path value defaults to /<name>
+  #
+  # If nothing is specified except the action, say :foo, then the default route generated is
+  # match '/foo', via: :get, to: 'pages#foo', as: :foo
+  class RouteSpec
+    attr_reader :action, :controller, :verb, :to, :name, :path
+
+    def initialize(action, keyword_args = {})
+      @action = action
+      @controller = 'pages'
+      @verb = keyword_args[:via]  || keyword_args[:verb] || :get
+      @to   = keyword_args[:to]   || "#{@controller}##{action}"
+      @name = keyword_args[:name] || keyword_args[:as] ||  action
+      @path = keyword_args[:path] || "/#{@name}"
+    end
+
+    def via
+      @verb
+    end
+
+    def as
+      @name
+    end
+  end
 
   # ============== Permission Logic
   # Many actions require the current user to have special permissions before
@@ -131,8 +185,12 @@ class ApplicationController < ActionController::Base
   # It returns params[:action_name], which is the name of the action being requested.
   def check_permission_for_action
     if !action_permitted?(action_name)
-      # redirect_to sign_in_path
-      redirect_to :back, notice: 'You do not have permission to execute this action.'
+      if !signed_in?
+        cache_requested_url
+        redirect_to sign_in_path, notice: 'Please sign in.'
+      else
+        redirect_back default_path: root_path, notice: 'You do not have permission to execute this action.'
+      end
     end
   end
 
@@ -170,4 +228,30 @@ class ApplicationController < ActionController::Base
     !current_user?(@user) if current_user
   end
 
+# ============================ MISC
+
+  # Redirect the user back to the previous page (http-referer).
+  # This method takes various optional keyword arguments that can alter its behavior.
+  # :default_path -- if there is no :back to go to (no http-referer), then redirect to this path instead.
+  # :error_page -- if there is no :default_path specified, then, instead of redirecting, render the specified page.
+  # <other keyword args> -- all others are passed to redirect_to, e.g., :notify.
+  def redirect_back (options = {})
+    keyword_args = options
+
+    redirect_key_args = {}
+    %w(:notify :error).each do |key|
+      redirect_key_args[key] = keyword_args[key]
+    end
+
+    redirect_path = request.referrer.present? ? :back : keyword_args[:default_path]
+
+    if redirect_path
+      redirect_to redirect_path, redirect_key_args
+    elsif keyword_args[:error_page]
+      render keyword_args[:error_page]
+    else
+      render plain: 'The app encountered a problem.'
+    end
+  end
 end
+

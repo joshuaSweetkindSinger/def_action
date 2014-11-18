@@ -21,20 +21,18 @@
 # so long as :user_id and/or :micropost_id are given in params, respectively.
 
 class PagesController < ApplicationController
+  @routes = {}
+
   def initialize
     super
   end
 
-  # Show the home page
-  def_action :home do |action|
-    action.permitted? {permit_action_on_self}
+  # ======================= SIGN IN / SIGN OUT / SIGN UP
 
-    action.main do
-      @micropost = current_user.microposts.build # empty micropost for form template
-      @posts     = current_user.feed.paginate(page: params[:page])
-    end
+  def_action :sign_in_page do |a|
+    a.permitted? {true}
+    a.route(name: :sign_in)
   end
-
 
   # Cause the user to be signed in with the supplied credentials
   def_action :sign_in_to_session do |action|
@@ -48,12 +46,14 @@ class PagesController < ApplicationController
 
     action.ui do
       if @authenticated
-        redirect_to root_path # redirect_back_or root_path
+        redirect_to_requested_url root_path
       else
-        flash[:error] = 'Invalid email/password combination'
-        redirect_to sign_in_path
+        # flash[:error] =
+        redirect_to sign_in_path, error: 'Invalid email/password combination'
       end
     end
+
+    action.route(via: :post)
   end
 
   # Cause the user to be signed out.
@@ -61,7 +61,17 @@ class PagesController < ApplicationController
     a.permitted? {true}
     a.main {sign_out}
     a.ui {redirect_to sign_in_path}
+    a.route(name: :sign_out, via: :delete)
   end
+
+  def_action :sign_up do |a|
+    a.permitted? {true}
+    a.main {@user ||= User.new}
+  end
+
+
+
+  # ================ MICROPOST ACTIONS
 
   # Create a new micropost from the home page.
   def_action :create_post do |a|
@@ -69,8 +79,10 @@ class PagesController < ApplicationController
     a.main {@post, @success = @user.create_post(params[:micropost])}
     a.ui do
       flash[:error] = @post.errors.full_messages.join(',') if !@success
-      redirect_to :back
+      redirect_back
     end
+
+    a.route(via: :post)
   end
 
   # Destroy a micropost
@@ -79,123 +91,150 @@ class PagesController < ApplicationController
     a.main {Micropost.find(params[:micropost_id]).destroy}
     a.ui do
       flash[:success] = 'Post deleted'
-      redirect_to :back
+      redirect_back
     end
+    a.route(via: :delete)
   end
 
-  def_permission(:help) {true}
-  def help
+  # ================== INFO PAGES
+  def_action :help do |a|
+    a.permitted? {true}
   end
 
-  def_permission :about do true; end
-  def about
+  def_action :about do |a|
+    a.permitted? {true}
   end
 
-  def_permission :contact do true; end
-  def contact
+  def_action :contact do |a|
+    a.permitted? {true}
   end
 
-  def_permission :sign_in_page do true; end
-  def sign_in_page
-  end
+  # ================== USER ACTIONS
 
+  # Show the home page
+  def_action :home do |a|
+    a.permitted? {permit_action_on_self}
 
-  # ================== Users
-
-  def_permission :sign_up do true; end
-  def sign_up
-    @user ||= User.new
-  end
-
-
-  def_permission :user_profile do true; end
-  def user_profile
-    @posts = @user.microposts.paginate(page: params[:page])
-  end
-
-  def_permission :create_user do true; end
-  def create_user
-    # Action
-    @user    = User.new(params[:user])
-    @success = @user.save
-    sign_in @user if @success
-
-    # UI
-    if @success
-      flash[:success] = 'Welcome to the Sample App!'
-      redirect_to root_path
-    else
-      flash[:errors] = @user.errors.full_messages
-      redirect_to :sign_up
+    a.main do
+      @micropost = current_user.microposts.build # empty micropost for form template
+      @posts     = current_user.feed.paginate(page: params[:page])
     end
 
+    a.route(name: :root, path: '/')
   end
 
-  def_permission :edit_user, &:permit_action_on_self
-  def edit_user
+
+  def_action :user_profile do |a|
+    a.permitted? {true}
+    a.main {@posts = @user.microposts.paginate(page: params[:page])}
+    a.route(path: '/user_profile/:user_id')
   end
 
-  def_permission :update_user, &:permit_action_on_self
-  def update_user
-    # Action
-    @success = @user.update_attributes(params[:user])
 
-    # UI
-    if @success
-      flash[:success] = "Profile updated"
-      redirect_to @user
-    else
-      redirect_to :edit_user
+  def_action :create_user do |a|
+    a.main do
+      @user    = User.new(params[:user])
+      @success = @user.save
+      sign_in @user if @success
     end
+
+    a.ui do
+      if @success
+        flash[:success] = 'Welcome to the Sample App!'
+        redirect_to root_path
+      else
+        flash[:errors] = @user.errors.full_messages
+        redirect_to :sign_up
+      end
+    end
+
+    a.route(via: :post)
   end
 
-  def_permission :delete_user, &:permit_admin_when_not_user
-  def delete_user
-    # Action
-    @user.destroy
-
-    # UI
-    flash[:success] = 'User deleted'
-    redirect_to controller: PagesController, action: :users_index
-end
-
-  def_permission :users_being_followed do true; end
-  def users_being_followed
-    @title = 'Following'
-    @users = @user.followed_users.paginate(page: params[:page])
+  def_action :edit_user do |a|
+    a.permitted? {permit_action_on_self}
+    a.route(path: '/edit_user/:user_id')
   end
 
-  def_permission :followers do true; end
-  def followers
-    @title = 'Followers'
-    @users = @user.followers.paginate(page: params[:page])
+  def_action :update_user do |a|
+    a.main {@success = @user.update_attributes(params[:user])}
+
+    a.ui do
+      if @success
+        flash[:success] = "Profile updated"
+        redirect_to user_profile_path(@user)
+      else
+        redirect_to :edit_user
+      end
+    end
+
+    a.route(via: :post)
+  end
+
+
+  def_action :delete_user do |a|
+    a.permitted? {permit_admin_when_not_user}
+    a.main {@user.destroy}
+    a.ui do
+      flash[:success] = 'User deleted'
+      redirect_to controller: PagesController, action: :users_index
+    end
+    a.route(via: :delete)
+  end
+
+  def_action :users_being_followed do |a|
+    a.permitted? {true}
+    a.main do
+      @title = 'Following'
+      @users = @user.followed_users.paginate(page: params[:page])
+    end
+    a.route(path: '/users_being_followed/:user_id')
+  end
+
+  def_action :followers do |a|
+    a.permitted? {true}
+    a.main do
+      @title = 'Followers'
+      @users = @user.followers.paginate(page: params[:page])
+    end
+    a.route(path: '/followers/:user_id')
   end
 
   # Cause the current user to follow the user whose id is params[:user_id]
-  def_permission :follow_user, &:permit_all_when_not_user
-  def follow_user
-    current_user.follow!(@user)
-    respond_to do |format|
-      format.html do
-        redirect_to :back
-      end
+  def_action :follow_user do |a|
+    a.permitted? {permit_all_when_not_user}
 
-      format.js
+    a.main do
+      current_user.follow!(@user)
+      respond_to do |format|
+        format.html do
+          redirect_back
+        end
+
+        format.js
+      end
     end
+
+    a.route(via: :post)
   end
 
   # Cause the current user to unfollow the user whose id is params[:user_id]
-  def_permission :unfollow_user do true; end
-  def unfollow_user
-    current_user.unfollow!(@user)
-    respond_to do |format|
-      format.html {redirect_to :back}
-      format.js
+  def_action :unfollow_user do |a|
+    a.permitted? {true}
+
+    a.main do
+      current_user.unfollow!(@user)
+      respond_to do |format|
+        format.html {redirect_back}
+        format.js
+      end
     end
+
+    a.route(via: :post)
   end
 
-  def_permission :users_index, &:permit_action_on_self
-  def users_index
-    @users = User.paginate(page: params[:page], per_page: 10)
+  def_action :users_index do |a|
+    a.permitted? {permit_action_on_self}
+    a.main {@users = User.paginate(page: params[:page], per_page: 10)}
   end
 end

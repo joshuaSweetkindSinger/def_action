@@ -1,24 +1,33 @@
 SampleApp::Application.routes.draw do
-  root to: 'pages#home'
-  match '/about', to: 'pages#about'
-  match '/contact', to: 'pages#contact'
-  match '/help', to: 'pages#help'
-  match '/sign_up', to: 'pages#sign_up'
-  match '/sign_in', to: 'pages#sign_in_page', as: :sign_in
-  match '/sign_in_to_session', to: 'pages#sign_in_to_session', via: :post, as: :sign_in_to_session
-  match '/sign_out', to: 'pages#sign_out_of_session', via: :delete, as: :sign_out
-  match '/create_post', to: 'pages#create_post', via: :post
-  match '/delete_post', to: 'pages#delete_post', via: :delete
-  match '/users_index', to: 'pages#users_index'
-  match '/user_profile/:user_id', to: 'pages#user_profile', as: :user_profile
-  match '/users_being_followed/:user_id', to: 'pages#users_being_followed', as: :users_being_followed
-  match '/followers/:user_id', to: 'pages#followers', as: :followers
-  match '/edit_user/:user_id', to:'pages#edit_user', as: :edit_user
-  match '/create_user', to:'pages#create_user', via: :post, as: :create_user
-  match '/update_user/:user_id', to:'pages#update_user', via: :post, as: :update_user
-  match '/delete_user/:user_id', to:'pages#delete_user', via: :delete, as: :delete_user
-  match '/follow_user/:id', via: :delete, to: 'pages#unfollow_user', as: :unfollow_user
-  match '/follow_user/:id', via: :post,   to: 'pages#follow_user',   as: :follow_user
+
+  PagesController.routes.each do |action, route|
+    puts "match #{route.path}, via: #{route.verb}, to: #{route.to}, as: #{route.name}"
+    match route.path, via: route.verb, to: route.to, as: route.name
+  end
+
+  # root to: 'pages#home'
+  #match '/about', to: 'pages#about'
+  #match '/contact', to: 'pages#contact'
+  #match '/help', to: 'pages#help'
+  #match '/sign_up', to: 'pages#sign_up'
+  #match '/sign_in', to: 'pages#sign_in_page', as: :sign_in
+  #match '/users_index', to: 'pages#users_index'
+
+  #match '/create_user', to:'pages#create_user', via: :post, as: :create_user
+  #match '/create_post', to: 'pages#create_post', via: :post
+  #match '/sign_in_to_session', to: 'pages#sign_in_to_session', via: :post, as: :sign_in_to_session
+
+  #match '/sign_out', to: 'pages#sign_out_of_session', via: :delete, as: :sign_out
+  #match '/delete_post', to: 'pages#delete_post', via: :delete
+
+  #match '/update_user', to:'pages#update_user', via: :post, as: :update_user
+  #match '/delete_user/:user_id', to:'pages#delete_user', via: :delete, as: :delete_user
+  #match '/user_profile/:user_id', to: 'pages#user_profile', as: :user_profile
+  #match '/users_being_followed/:user_id', to: 'pages#users_being_followed', as: :users_being_followed
+  #match '/followers/:user_id', to: 'pages#followers', as: :followers
+  #match '/edit_user/:user_id', to:'pages#edit_user', as: :edit_user
+  #match '/follow_user/:id', via: :delete, to: 'pages#unfollow_user', as: :unfollow_user
+  #match '/follow_user/:id', via: :post,   to: 'pages#follow_user',   as: :follow_user
 
 
 
