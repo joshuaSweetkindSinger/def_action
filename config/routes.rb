@@ -3,6 +3,8 @@ SampleApp::Application.routes.draw do
   PagesController.routes.each do |action, route|
     # puts "match #{route.path}, via: #{route.verb}, to: #{route.to}, as: #{route.name}"
     puts route.to_s
+    route.add_to_route_map self
+    # eval route.to_s
 
     # match route.path, via: route.verb, to: route.to, as: route.name
   end

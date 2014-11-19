@@ -1,0 +1,6 @@
+<h1> Routes</h1>
+<% @routes.each do |action, route_spec|%>
+  <ul>
+    <li><%= action %> => <%= route_spec.to_s %></li>
+  </ul>
+<% end %>

@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   include ApplicationHelper
 
+  @@routes = {}
+
   before_filter :get_object_references
   before_filter :check_permission_for_action
 
@@ -15,7 +17,7 @@ class ApplicationController < ActionController::Base
     @post = Micropost.find(params[:micropost_id]) if params[:micropost_id]
   end
 
-    # ============ Action Definition Logic
+  # ============ Action Definition Logic
   # This section defines constructs for specifying a controller action based on the following framework:
   # an action has these parts:
   #  - a permission check, which, if it does not pass, results in the action not being executed.
@@ -58,7 +60,9 @@ class ApplicationController < ActionController::Base
       send ui if respond_to?(ui)
     end
 
-    @routes[action] ||= RouteSpec.new(action)
+    # create a default route if the action spec did not explicitly define one using the route() method
+    routes[action] ||= RouteSpec.new(controller_class: self, action: action)
+
   end
 
   # This is a helper class that holds information about the action that is being defined via def_action.
@@ -84,7 +88,12 @@ class ApplicationController < ActionController::Base
     end
 
     def route (keyword_args = {})
-      @controller_class.routes[@action_name] = RouteSpec.new(@action_name, keyword_args)
+      # Add the route spec to routes. Bash :controller and :to so that caller cannot override
+      # the convention we have set up for def_action.
+      @controller_class.routes[@action_name] = RouteSpec.new(keyword_args.merge(controller_class: @controller_class,
+                                                                                action: @action_name,
+                                                                                controller: nil,
+                                                                                to: nil))
     end
   end
 
@@ -115,11 +124,24 @@ class ApplicationController < ActionController::Base
   # ========= Routes
 
   def self.routes
-    @routes
+    @@routes
   end
 
   # A helper class for specifying route information.
-  # Example: route = RouteSpec.new(:user_profile, path: '/user_profile/:id')
+  # Example: route = RouteSpec.new(PagesController, :user_profile, path: '/user_profile/:id', via: :get)
+  # Example: route = RouteSpec.new(PagesController, :foo) {match '/foo', via: :post, to: 'mycontroller#foo', as: :foo}
+  #
+  # There are two mutually exclusive ways to specify the route:
+  #   a) you can pass keyword args for :path, :verb, :to, :name, :controller (many of these have defaults. You don't need to specify them all)or
+  #   b) you can supply a block that just calls a route-mapper method, e.g. "match". The block will be called
+  # in the context of the route mapper when the route object receives an add_to_route_map message. Each of these ways
+  # is illustrated above in the examples.
+  #
+  # Keyword args: :path, :verb, :to, :name do the obvious things.
+  # There are multiple ways to specify :to. It can be passed in explicitly as, e.g. 'pages#sign_in'. This form
+  # always takes precedence over other forms. Or, it can be derived from the names of the :controller and :action.
+  # In its turn, the name of the :controller can be derived from the class object :controller_class if this is passed in.
+
   #
   # Aliases
   # The :verb component can also be specified using the :via keyword.
@@ -128,22 +150,41 @@ class ApplicationController < ActionController::Base
   # Defaults
   # The :verb, :name , :to, and :path keyword args are defaulted if no name or path is supplied.
   # :verb value defaults to :get
-  # :name value defaults to action
-  # :to value defaults to 'pages/<action>'
+  # :name value defaults to :action if :action is supplied.
+  # :to value defaults to "<controller>#<action>" if :controller and :action are supplied, or if
+  #     :controller_class and :action are supplied.
   # :path value defaults to /<name>
+  # :controller value defaults to a short name based on the name of controller_class, e.g., 'PagesController', as
+  #     a class name, goes to 'pages' as the value of :controller.
   #
-  # If nothing is specified except the action, say :foo, then the default route generated is
+  # If nothing is specified except the controller class and the action, say Pages Controller and :foo, then
+  # # the default route generated is
   # match '/foo', via: :get, to: 'pages#foo', as: :foo
   class RouteSpec
-    attr_reader :action, :controller, :verb, :to, :name, :path
+    attr_reader :controller, :action, :verb, :to, :name, :path
 
-    def initialize(action, keyword_args = {})
-      @action = action
-      @controller = 'pages'
-      @verb = keyword_args[:via]  || keyword_args[:verb] || :get
-      @to   = keyword_args[:to]   || "#{@controller}##{action}"
-      @name = keyword_args[:name] || keyword_args[:as] ||  action
-      @path = keyword_args[:path] || "/#{@name}"
+    def initialize(keyword_args = {}, &block)
+      # Can't specify both a block and keyword args.
+      if block_given? && !keyword_args.empty?
+        raise "For an instance of RouteSpec, can't specify both parameters and a block--just one or the other"
+      end
+
+
+      if !block_given?
+        @keyword_args    = keyword_args # hold onto the original spec
+        action           = keyword_args[:action]
+        controller_class = keyword_args[:controller_class]
+        controller       = keyword_args[:controller] || controller_class.name.gsub('Controller', '').downcase
+
+        @verb  = keyword_args[:via]  || keyword_args[:verb] || :get
+        @to    = keyword_args[:to]   || "#{controller}##{action}"
+        @name  = keyword_args[:name] || keyword_args[:as] || action
+        @path  = keyword_args[:path] || "/#{@name}"
+
+        @controller, @action = @to.split('#') # Make these agree with @to, now that we have calculated it.
+      else
+        @block = block
+      end
     end
 
     def via
@@ -155,13 +196,27 @@ class ApplicationController < ActionController::Base
     end
 
     def to_s
-      "match '#{path}', via: :#{verb}, to: '#{to}', as: :#{name}"
+      if !@block
+        "match '#{path}', via: :#{verb}, to: '#{to}', as: :#{name}"
+      else
+        @block.to_s
+      end
     end
 
-    def to_proc
-      proc {match path, via: verb, to: to, as: name}
+    # Define the route that we represent on the specified route mapper.
+    # Example: from within the file routes.rb, doing
+    #   route.add_to_route_map(self)
+    # will add the route represented by the RouteSpec object.
+    def add_to_route_map (map)
+      if @block
+        map.instance_eval &@block
+      else
+        map.match path, via: verb, to: to, as: name
+      end
     end
   end
+
+
 
   # ============== Permission Logic
   # Many actions require the current user to have special permissions before
@@ -271,4 +326,12 @@ class ApplicationController < ActionController::Base
     end
   end
 end
+
+
+
+
+
+
+
+
 

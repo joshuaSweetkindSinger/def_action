@@ -21,12 +21,15 @@
 # so long as :user_id and/or :micropost_id are given in params, respectively.
 
 class PagesController < ApplicationController
-  @routes = {}
-
   def initialize
     super
   end
 
+  # ======================= DEFINED ROUTES
+  def_action :routes do |a|
+    a.permitted? {true}
+    a.main {@routes = ApplicationController.routes}
+  end
   # ======================= SIGN IN / SIGN OUT / SIGN UP
 
   def_action :sign_in_page do |a|
@@ -48,8 +51,7 @@ class PagesController < ApplicationController
       if @authenticated
         redirect_to_requested_url root_path
       else
-        # flash[:error] =
-        redirect_to sign_in_path, error: 'Invalid email/password combination'
+        redirect_to sign_in_path, flash: {error: 'Invalid email/password combination'}
       end
     end
 
