@@ -7,7 +7,7 @@
   <% if user.admin? %>
     is an admin
   <% end %>
-  <% if current_user.admin? && !current_user?(user) %>
+  <% if current_user && current_user.admin? && (current_user != user) %>
     |  <%= link_to('delete', delete_user_path(user), method: :delete, confirm: 'You sure?') %>
   <% end %>
 </li>

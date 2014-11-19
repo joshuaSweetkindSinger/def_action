@@ -56,6 +56,12 @@ class PagesController < ApplicationController
     action.route(via: :post)
   end
 
+  def_action :sign_out_page do |a|
+    a.permitted? {true}
+    a.main {render 'sign_out_page', layout: false}
+    a.route(name: :sign_out_page)
+  end
+
   # Cause the user to be signed out.
   def_action :sign_out_of_session do |a|
     a.permitted? {true}
@@ -135,7 +141,7 @@ class PagesController < ApplicationController
     a.main do
       @user    = User.new(params[:user])
       @success = @user.save
-      sign_in @user if @success
+      sign_in @user if @success && !current_user
     end
 
     a.ui do
@@ -157,18 +163,24 @@ class PagesController < ApplicationController
   end
 
   def_action :update_user do |a|
-    a.main {@success = @user.update_attributes(params[:user])}
+    a.permitted? {permit_action_on_self}
+
+    a.main do
+      @success = @user.update_attributes(params[:user])
+      sign_in @user if (@success && (current_user == @user)) # Updating our own attributes will assign a new secure token,
+                                                             # which would otherwise cause us to be logged out when current_user is evaluated on the next request,
+                                                             # unless we log back in again using the new secure token.
+    end
 
     a.ui do
       if @success
-        flash[:success] = "Profile updated"
-        redirect_to user_profile_path(@user)
+        redirect_to user_profile_path(@user), flash: {success: 'Profile Updated'}
       else
-        redirect_to :edit_user
+        render :edit_user
       end
     end
 
-    a.route(via: :post)
+    a.route(via: :put)
   end
 
 
@@ -230,7 +242,7 @@ class PagesController < ApplicationController
       end
     end
 
-    a.route(via: :post)
+    a.route(via: :delete)
   end
 
   def_action :users_index do |a|

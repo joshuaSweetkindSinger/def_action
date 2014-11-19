@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
   has_many :followers, through: :reverse_relationships
 
   before_save {|user| user.email = email.downcase}
-  before_save :create_member_token
+  before_save :create_secure_token
 
   validates :name, presence: true, length: {maximum: 50}
   validates :password, length: {minimum: 6}
@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
   end
 
   private
-  def create_member_token
+  def create_secure_token
     self.remember_token = SecureRandom.urlsafe_base64
   end
 end

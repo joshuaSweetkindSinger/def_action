@@ -1,4 +1,4 @@
-<% unless current_user?(@user) %>
+<% if current_user && (current_user != @user) %>
   <div id = "follow_or_unfollow_button">
     <% if current_user.following?(@user) %>
       <%= render 'shared/unfollow_button' %>

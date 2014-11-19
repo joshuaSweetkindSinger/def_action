@@ -184,13 +184,19 @@ class ApplicationController < ActionController::Base
   # Note: action_name() is a method that is defined in the context of the controller.
   # It returns params[:action_name], which is the name of the action being requested.
   def check_permission_for_action
-    if !action_permitted?(action_name)
-      if !signed_in?
+    is_permitted = action_permitted?(action_name)
+
+    case
+      # Action is not permitted without sign in
+      when !current_user && !is_permitted
         cache_requested_url
         redirect_to sign_in_path, notice: 'Please sign in.'
-      else
+
+      # Action is not permitted
+      when current_user && !is_permitted
         redirect_back default_path: root_path, notice: 'You do not have permission to execute this action.'
-      end
+
+      # Action is permitted (no need to do anything)
     end
   end
 
@@ -210,22 +216,22 @@ class ApplicationController < ActionController::Base
 
   # The current user and admin can both take actions on @user.
   def permit_action_on_self
-    current_user?(@user) || current_user.admin? if current_user
+    (current_user == @user) || current_user.admin? if current_user
   end
 
   # The owner of a micropost or an admin can both manipulate a post.
   def permit_post_owner
-    current_user.admin? || current_user?(@post.user) if current_user
+    current_user.admin? || (current_user == @post.user) if current_user
   end
 
   # Allow admin to operate on @user so long as @user is not the admin himself.
   def permit_admin_when_not_user
-    current_user.admin? && !current_user?(@user) if current_user
+    current_user.admin? && (current_user != @user) if current_user
   end
 
   # Allow anyone to operate on @user so long as @user is not the current user himself.
   def permit_all_when_not_user
-    !current_user?(@user) if current_user
+    (current_user != @user) if current_user
   end
 
 # ============================ MISC
@@ -233,22 +239,25 @@ class ApplicationController < ActionController::Base
   # Redirect the user back to the previous page (http-referer).
   # This method takes various optional keyword arguments that can alter its behavior.
   # :default_path -- if there is no :back to go to (no http-referer), then redirect to this path instead.
-  # :error_page -- if there is no :default_path specified, then, instead of redirecting, render the specified page.
-  # <other keyword args> -- all others are passed to redirect_to, e.g., :notify.
-  def redirect_back (options = {})
-    keyword_args = options
-
+  # :default_page -- if there is no :back, and no :default_path was specified, then, instead of redirecting, render the specified page.
+  # :notice, :error -- these are passed to redirect_to as keyword args (in the event that we actually redirect)
+  def redirect_back (keyword_args = {})
     redirect_key_args = {}
-    %w(:notify :error).each do |key|
+    [:notice, :error].each do |key|
       redirect_key_args[key] = keyword_args[key]
     end
 
-    redirect_path = request.referrer.present? ? :back : keyword_args[:default_path]
+    redirect_path = request.referrer.present? ? :back : keyword_args[:default_path] # Calculate the redirect path
 
+    # We found a redirect-path--Go there
     if redirect_path
       redirect_to redirect_path, redirect_key_args
-    elsif keyword_args[:error_page]
-      render keyword_args[:error_page]
+
+    # Couldn't find a redirect path--go to default page instead
+    elsif keyword_args[:default_page]
+      render keyword_args[:default_page]
+
+    # No default page was specified--give up.
     else
       render plain: 'The app encountered a problem.'
     end

@@ -1,0 +1,14 @@
+<!--
+Render a sign-out form
+-->
+
+<% provide(:title, "Sign Out") %>
+
+<h1>Sign Out</h1>
+<div class = "row">
+  <div class = "span6 offset3">
+    <%= form_tag(sign_out_path, method: :delete) do %>
+      <%= submit_tag 'Sign Out', class: 'btn btn-large btn-primary' %>
+    <% end %>
+  </div>
+</div>

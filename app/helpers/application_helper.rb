@@ -18,9 +18,7 @@ module ApplicationHelper
   # Generate a delete button that allows the specified post to be deleted,
   # if the current user has privileges; otherwise, return the empty string.
   def gen_button_for_delete_post (post)
-    return '' if !signed_in?
-
-    if current_user?(post.user) || current_user.admin?
+    if current_user && ((current_user == post.user) || current_user.admin?)
       link_to('Delete',
               {
                 controller:   'pages',
@@ -34,14 +32,20 @@ module ApplicationHelper
     end
   end
 
+  SECURE_USER_TOKEN_SYMBOL = :secure_user_token
+
+  def secure_user_token
+    cookies[:SECURE_USER_TOKEN_SYMBOL]
+  end
+
   def sign_in (user)
-    cookies.permanent[:remember_token] = user.remember_token
+    cookies.permanent[:SECURE_USER_TOKEN_SYMBOL] = user.remember_token
     self.current_user = user
   end
 
   def sign_out
     self.current_user = nil
-    cookies.delete(:remember_token)
+    cookies.delete(:SECURE_USER_TOKEN_SYMBOL)
   end
 
   def current_user= (u)
@@ -49,25 +53,10 @@ module ApplicationHelper
   end
 
   def current_user
-    @current_user ||= signed_in? && User.find_by_remember_token(remember_token)
+    @current_user ||= secure_user_token && User.find_by_remember_token(secure_user_token)
   end
 
-  # Returns true when the specified user is the current user; otherwise, false.
-  # Note, there is a corner case in which u == nil and there is no current user.
-  # In that case, one could argue that the current user *is* u, but instead we return false
-  # because the assumptions of the predicate are not operative: there *is* no current user, so
-  # the current user is not u, even when u is nil.
-  def current_user? (u)
-    u && (u == current_user)
-  end
 
-  def signed_in?
-    remember_token
-  end
-
-  def remember_token
-    cookies[:remember_token]
-  end
 
   # Take the user to the saved ":return_to" page, or to the specified default
   # page if there is no :return_to page saved for the session.
