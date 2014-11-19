@@ -153,6 +153,14 @@ class ApplicationController < ActionController::Base
     def as
       @name
     end
+
+    def to_s
+      "match '#{path}', via: :#{verb}, to: '#{to}', as: :#{name}"
+    end
+
+    def to_proc
+      proc {match path, via: verb, to: to, as: name}
+    end
   end
 
   # ============== Permission Logic

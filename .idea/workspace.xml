@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="05ba27f1-b4da-4c54-830d-7514e935df8f" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/views/pages/sign_out_page.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/shared/_follow_or_unfollow.html.erb" afterPath="$PROJECT_DIR$/app/views/shared/_follow_or_unfollow.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/layouts/_header.html.erb" afterPath="$PROJECT_DIR$/app/views/layouts/_header.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/shared/_user.html.erb" afterPath="$PROJECT_DIR$/app/views/shared/_user.html.erb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/application_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/application_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/helpers/application_helper.rb" afterPath="$PROJECT_DIR$/app/helpers/application_helper.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/pages_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/pages_controller.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/pages/sign_in_page.html.erb" afterPath="$PROJECT_DIR$/app/views/pages/sign_in_page.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/models/user.rb" afterPath="$PROJECT_DIR$/app/models/user.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/views/pages/user_profile.html.erb" afterPath="$PROJECT_DIR$/app/views/pages/user_profile.html.erb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/models/user_spec.rb" afterPath="$PROJECT_DIR$/spec/models/user_spec.rb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spec/support/utilites.rb" afterPath="$PROJECT_DIR$/spec/support/utilites.rb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/config/routes.rb" afterPath="$PROJECT_DIR$/config/routes.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="sample_app.iws" />
@@ -21,7 +11,7 @@
     <file path="/static_pages_spec.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414780360165" ignored="false" />
     <file path="/home.html.erb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415829132157" ignored="false" />
     <file path="/help.html.erb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1413214980642" ignored="false" />
-    <file path="/routes.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416344945572" ignored="false" />
+    <file path="/routes.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416422099374" ignored="false" />
     <file path="/static_pages_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415908935140" ignored="false" />
     <file path="/about.html.erb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1413214966515" ignored="false" />
     <file path="/application.html.erb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415751674846" ignored="false" />
@@ -49,7 +39,7 @@
     <file path="/en.yml" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1413912940519" ignored="false" />
     <file path="/authentication_pages_spec.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415246663058" ignored="false" />
     <file path="/sessions_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415907913234" ignored="false" />
-    <file path="/application_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416417787356" ignored="false" />
+    <file path="/application_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416421912123" ignored="false" />
     <file path="/20141022170032_add_remember_token_to_users.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1413997302972" ignored="false" />
     <file path="/sessions_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415906540010" ignored="false" />
     <file path="/signing_in.feature" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1414033355178" ignored="false" />
@@ -150,10 +140,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="pages_controller.rb" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="pages_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="73" column="21" selection-start="2632" selection-end="2632" vertical-scroll-proportion="2.0240295">
+            <state line="73" column="21" selection-start="2632" selection-end="2632" vertical-scroll-proportion="-34.03846">
               <folding />
             </state>
           </provider>
@@ -171,16 +161,43 @@
       <file leaf-file-name="application_controller.rb" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="26" selection-start="960" selection-end="960" vertical-scroll-proportion="0.0">
+            <state line="157" column="59" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="_header.html.erb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/views/layouts/_header.html.erb">
+      <file leaf-file-name="routes.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/routes.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="28" selection-start="343" selection-end="343" vertical-scroll-proportion="-5.0">
+            <state line="0" column="29" selection-start="0" selection-end="29" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="engine.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/railties-3.2.13/lib/rails/engine.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="488" column="18" selection-start="17671" selection-end="17704" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="route_set.rb" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/actionpack-3.2.13/lib/action_dispatch/routing/route_set.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="261" column="48" selection-start="8491" selection-end="8491" vertical-scroll-proportion="0.4990758">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mapper.rb" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/actionpack-3.2.13/lib/action_dispatch/routing/mapper.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="297" column="9" selection-start="10607" selection-end="10607" vertical-scroll-proportion="-2.3076923">
               <folding />
             </state>
           </provider>
@@ -207,7 +224,6 @@
         <option value="$PROJECT_DIR$/app/views/shared/_micropost_form.html.erb" />
         <option value="$PROJECT_DIR$/app/views/pages/edit_user.html.erb" />
         <option value="$PROJECT_DIR$/app/views/pages/sign_up.html.erb" />
-        <option value="$PROJECT_DIR$/config/routes.rb" />
         <option value="$PROJECT_DIR$/app/views/shared/_follow_button.html.erb" />
         <option value="$PROJECT_DIR$/app/views/shared/_unfollow_button.html.erb" />
         <option value="$PROJECT_DIR$/app/views/pages/sign_in_page.html.erb" />
@@ -216,10 +232,11 @@
         <option value="$PROJECT_DIR$/app/models/user.rb" />
         <option value="$PROJECT_DIR$/app/views/shared/_follow_or_unfollow.html.erb" />
         <option value="$PROJECT_DIR$/app/views/shared/_user.html.erb" />
-        <option value="$PROJECT_DIR$/app/controllers/application_controller.rb" />
         <option value="$PROJECT_DIR$/app/views/layouts/_header.html.erb" />
         <option value="$PROJECT_DIR$/app/helpers/application_helper.rb" />
         <option value="$PROJECT_DIR$/app/controllers/pages_controller.rb" />
+        <option value="$PROJECT_DIR$/app/controllers/application_controller.rb" />
+        <option value="$PROJECT_DIR$/config/routes.rb" />
       </list>
     </option>
   </component>
@@ -1219,41 +1236,6 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/views/layouts/application.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/activerecord-3.2.13/lib/active_record/dynamic_matchers.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="8" selection-start="1029" selection-end="1029" vertical-scroll-proportion="0.33333334">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/models/user.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="57" column="12" selection-start="1732" selection-end="1746" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/shared/_user.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="64" selection-start="259" selection-end="259" vertical-scroll-proportion="0.24280575">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/views/shared/_follow_or_unfollow.html.erb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="9" selection-start="269" selection-end="269" vertical-scroll-proportion="0.21582733">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/views/pages/user_profile.html.erb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="17" column="42" selection-start="408" selection-end="408" vertical-scroll-proportion="0.4586331">
@@ -1268,23 +1250,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/helpers/application_helper.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="6" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/actionpack-3.2.13/lib/action_controller/metal/redirecting.rb">
       <provider selected="true" editor-type-id="text-editor">
         <state line="80" column="33" selection-start="4462" selection-end="4473" vertical-scroll-proportion="0.94708997">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="26" selection-start="960" selection-end="960" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1324,9 +1292,58 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/helpers/application_helper.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="6" selection-start="1297" selection-end="1297" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="21" selection-start="2632" selection-end="2632" vertical-scroll-proportion="2.0240295">
+        <state line="73" column="21" selection-start="2632" selection-end="2632" vertical-scroll-proportion="-34.03846">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="157" column="59" selection-start="5479" selection-end="5479" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/actionpack-3.2.13/lib/action_dispatch/routing/mapper.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="297" column="9" selection-start="10607" selection-end="10607" vertical-scroll-proportion="-2.3076923">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/actionpack-3.2.13/lib/action_dispatch.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="13" selection-start="2313" selection-end="2313" vertical-scroll-proportion="1.5974729">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/routes.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="29" selection-start="0" selection-end="29" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/railties-3.2.13/lib/rails/engine.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="488" column="18" selection-start="17671" selection-end="17704" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.rvm/gems/ruby-1.9.3-p547@rails3tutorial/gems/actionpack-3.2.13/lib/action_dispatch/routing/route_set.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="261" column="48" selection-start="8491" selection-end="8491" vertical-scroll-proportion="0.4990758">
           <folding />
         </state>
       </provider>

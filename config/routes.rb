@@ -1,8 +1,10 @@
 SampleApp::Application.routes.draw do
 
   PagesController.routes.each do |action, route|
-    puts "match #{route.path}, via: #{route.verb}, to: #{route.to}, as: #{route.name}"
-    match route.path, via: route.verb, to: route.to, as: route.name
+    # puts "match #{route.path}, via: #{route.verb}, to: #{route.to}, as: #{route.name}"
+    puts route.to_s
+
+    # match route.path, via: route.verb, to: route.to, as: route.name
   end
 
   # root to: 'pages#home'
