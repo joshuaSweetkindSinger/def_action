@@ -42,9 +42,10 @@ class PagesController < ApplicationController
     action.permitted? {true}
 
     action.main do
-      @user = User.find_by_email(params[:email])
-      @authenticated = @user && @user.authenticate(params[:password])
-      sign_in @user if @authenticated
+      if (@user = User.find_by_email(params[:email])) &&
+          (@authenticated = @user.authenticate(params[:password]))
+        sign_in @user
+      end
     end
 
     action.ui do
@@ -140,6 +141,8 @@ class PagesController < ApplicationController
 
 
   def_action :create_user do |a|
+    a.permitted? {true}
+
     a.main do
       @user    = User.new(params[:user])
       @success = @user.save

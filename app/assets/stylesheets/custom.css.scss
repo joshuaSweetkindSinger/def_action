@@ -21,6 +21,24 @@ $grayMediumLight: #eaeaea;
 }
 
 /* Universal */
+/* misc */
+.my_table {
+  table {
+    border-collapse: collapse;
+  }
+  th, td {
+    border: 2px solid black;
+    height: 20px;
+    text-align: left;
+    padding: 15px;
+  }
+
+  th {
+    background-color: blue;
+    color: white;
+  }
+}
+
 
 html {
   overflow-y: scroll;
@@ -258,4 +276,5 @@ aside {
     margin-bottom: 5px;
   }
 }
+
 

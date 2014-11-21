@@ -1,6 +1,20 @@
+<% provide(:title, "Routes") %>
 <h1> Routes</h1>
-<% @routes.each do |action, route_spec|%>
-  <ul>
-    <li><%= action %> => <%= route_spec.to_s %></li>
-  </ul>
-<% end %>
+<table class = "my_table">
+  <tr>
+    <th>Verb</th>
+    <th>Path</th>
+    <th>Name</th>
+    <th>Controller</th>
+    <th>Method</th>
+  </tr>
+  <% @routes.sort_by {|k, r| r.path}.each do |action, route_spec| %>
+    <tr>
+      <td><%= route_spec.verb %></td>
+      <td><%= render partial: 'shared/link_to_route_path', locals: {route_spec: route_spec} %></td>
+      <td><%= route_spec.name %></td>
+      <td><%= route_spec.controller %></td>
+      <td><%= route_spec.action %></td>
+    </tr>
+  <% end %>
+</table>
