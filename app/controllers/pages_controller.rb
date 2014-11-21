@@ -21,14 +21,40 @@
 # so long as :user_id and/or :micropost_id are given in params, respectively.
 
 class PagesController < ApplicationController
-  def initialize
-    super
-  end
 
-  # ======================= DEFINED ROUTES
+  # =================== CONSTANTS
+  DOCUMENTATION_ROOT          = '/Users/joshua/rails_projects/sample_app/doc/app'
+  TOPLEVEL_DOCUMENTATION_PAGE = 'index.html'
+
+  # ======================= SHOW DEFINED ROUTES
   def_action :routes do |a|
     a.permitted? {true}
     a.main {@routes = ApplicationController.routes}
+  end
+
+  # ======================= SHOW DOCUMENTATION
+  def_action :doc do |a|
+    a.permitted? {true}
+
+    # Get the name of the documentation file, if specified,
+    # and produce the path to the file.
+    a.main do
+      @file = params[:file] || TOPLEVEL_DOCUMENTATION_PAGE
+      @path = "#{DOCUMENTATION_ROOT}/#{@file}"
+    end
+
+    a.ui do
+      # If we are just accessed via, /doc then we want to redirect to /doc/index.html.
+      # This has the important effect of setting the current directory to /doc/
+      # so that subsequent links, expressed relative to /doc/, can be found correctly.
+      if !params[:file]
+        redirect_to doc_path(@file)
+      else
+        render @path
+      end
+    end
+
+    a.route(path: '/doc/(:file)', name: :doc)
   end
   # ======================= SIGN IN / SIGN OUT / SIGN UP
 

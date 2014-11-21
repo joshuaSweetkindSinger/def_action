@@ -18,3 +18,14 @@ class Micropost < ActiveRecord::Base
     where("user_id in (#{followed_user_ids}) or user_id = :user_id", user_id: user.id)
   end
 end
+# == Schema Information
+#
+# Table name: microposts
+#
+#  id         :integer         not null, primary key
+#  content    :string(255)
+#  user_id    :integer
+#  created_at :datetime        not null
+#  updated_at :datetime        not null
+#
+
