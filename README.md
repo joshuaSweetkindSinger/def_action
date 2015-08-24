@@ -1,3 +1,5 @@
-# Ruby on Rails Tutorial: sample application This is the sample application for [* Ruby on Rails Tutorial: Learn Rails by Example*](http:// railstutorial.org/) by [Michael Hartl]( http:// michaelhartl.com/).
-
-Hartl, Michael (2012-07-27). Ruby on Rails Tutorial: Learn Web Development with Rails (2nd Edition) (Addison-Wesley Professional Ruby Series) (Kindle Locations 1928-1930). Pearson Education. Kindle Edition. 
+# Experimental Code: def_action
+This is a sandbox rails application that exercises some experimental code to facilitate
+specifying the permissions requirements and routing requirements within a controller method
+definition. The top level language construct is def_action(). You can see examples of its use inside of
+`app/controllers/pages_controller.rb`. It is defined inside of `app/controllers/application_controller.rb`.
