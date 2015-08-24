@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="05ba27f1-b4da-4c54-830d-7514e935df8f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/controllers/pages_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/pages_controller.rb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="sample_app.iws" />
@@ -89,7 +89,7 @@
     <file path="/page_conroller_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415896238866" ignored="false" />
     <file path="/page_controller_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415896783019" ignored="false" />
     <file path="/page_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415907997773" ignored="false" />
-    <file path="/pages_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1416693616260" ignored="false" />
+    <file path="/pages_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1440446898899" ignored="false" />
     <file path="/pages_helper.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415900187024" ignored="false" />
     <file path="/helpers.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415900728681" ignored="false" />
     <file path="/users_index_controller.rb" changelist="05ba27f1-b4da-4c54-830d-7514e935df8f" time="1415902153748" ignored="false" />
@@ -143,46 +143,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="pages_controller.rb" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="pages_controller.rb" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="40" selection-start="835" selection-end="835" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="README.md" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/README.md">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="2" column="10" selection-start="130" selection-end="130" vertical-scroll-proportion="0.051903114">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="_header.html.erb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/views/layouts/_header.html.erb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="46" selection-start="365" selection-end="365" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="routes.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/config/routes.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="0" selection-start="1055" selection-end="1055" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="application_controller.rb" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="73" column="0" selection-start="3336" selection-end="3336" vertical-scroll-proportion="0.0">
+            <state line="15" column="61" selection-start="1033" selection-end="1033" vertical-scroll-proportion="0.38927335">
               <folding />
             </state>
           </provider>
@@ -220,8 +184,8 @@
         <option value="$PROJECT_DIR$/app/controllers/documentation_controller.rb" />
         <option value="$PROJECT_DIR$/doc/app/index.html" />
         <option value="$PROJECT_DIR$/app/views/layouts/_header.html.erb" />
-        <option value="$PROJECT_DIR$/app/controllers/pages_controller.rb" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/app/controllers/pages_controller.rb" />
       </list>
     </option>
   </component>
@@ -852,7 +816,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/config/routes.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="0" selection-start="1055" selection-end="1055" vertical-scroll-proportion="0.0">
+        <state line="27" column="0" selection-start="1055" selection-end="1055" vertical-scroll-proportion="0.02538071">
           <folding />
         </state>
       </provider>
@@ -864,21 +828,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/views/layouts/_header.html.erb">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="46" selection-start="365" selection-end="365" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="73" column="0" selection-start="3336" selection-end="3336" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="40" selection-start="835" selection-end="835" vertical-scroll-proportion="0.0">
+        <state line="8" column="46" selection-start="365" selection-end="365" vertical-scroll-proportion="0.2166065">
           <folding />
         </state>
       </provider>
@@ -886,6 +836,20 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="text-editor">
         <state line="2" column="10" selection-start="130" selection-end="130" vertical-scroll-proportion="0.051903114">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/application_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="6" selection-start="314" selection-end="314" vertical-scroll-proportion="-4.9948096">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/controllers/pages_controller.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="61" selection-start="1033" selection-end="1033" vertical-scroll-proportion="0.38927335">
           <folding />
         </state>
       </provider>

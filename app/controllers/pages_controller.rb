@@ -13,8 +13,8 @@
 # # the parent ApplicationController, which
 # take a strict view, disallowing all actions unless the action has explicitly been declared
 # to be allowable without signin, or unless the action has explicitly been declared
-# to be authorized for the current user. Making declarations regarding sign-in and authorization
-# is handled by the functions def_authorization() and def_authorization()
+# to be authorized for the current user. See def_permission() for more.
+
 
 # Two very common objects in this app are @user and @micropost. They are dereferenced
 # from the params by a before_filter and are available to each action defined below,
